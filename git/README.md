@@ -258,3 +258,6 @@ Para usar esta funcionalidad, es necesario tener instalado un visor de diferenci
 - conversión de mensajes de commit: [https://www.conventionalcommits.org/en/v1.0.0/](https://www.conventionalcommits.org/en/v1.0.0/)
 
 - git reflog : muestra el historial de referencias del repositorio, incluyendo los commits recientes y las ramas.
+
+
+esta linea la cree en la rama33 
