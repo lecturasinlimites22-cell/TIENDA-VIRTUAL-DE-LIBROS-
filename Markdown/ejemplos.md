@@ -1,6 +1,4 @@
-# 📘 GUÍA COMPLETA DE MARKDOWN (TODO EN UNO)
-
-Este documento contiene ejemplos de **sintaxis básica** y **sintaxis extendida** de Markdown, todo en un solo archivo para copiar y pegar.
+#  GUÍA COMPLETA DE MARKDOWN 
 
 ---
 
