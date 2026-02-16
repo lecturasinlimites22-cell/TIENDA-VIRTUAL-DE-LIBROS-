@@ -95,14 +95,17 @@ aqui vamos
 - git checkout -b [nombre de la rama] : crea una nueva rama y cambia a ella.
 - git checkout -- [archivo] : descarta los cambios en un archivo específico y lo restaura a la última versión confirmada o lo que esta en el staging area.
 - git checkout [hash del commit] : cambia al estado del repositorio en el commit especificado.
-- git checkout [hash del commit] -- [archivo] : descarta los cambios en un archivo específico y lo restaura al estado del commit especificado
+- git checkout [hash del commit] -- [archivo] : descarta los cambios en un archivo específico y lo restaura al estado del commit especificado.
 - git checkout - : cambia a la última rama en la que estabas.
 
-- git switch [nombre de la rama] : cambia a la rama especificada (equivalente a `git checkout [nombre de la rama]`) pero mas seguro.
-- git switch -c [nombre de la rama] : crea una nueva rama y cambia a ella (equivalente a `git checkout -b [nombre de la rama]`).
+- git switch [nombre de la rama]: cambia a la rama especificada (equivalente a `git checkout [nombre de la rama]`) pero mas seguro.
+- git switch -c [nombre de la rama]: crea una nueva rama y cambia a ella (equivalente a `git checkout -b [nombre de la rama]`).
 
 - git merge [nombre de la rama] : fusiona la rama especificada en la rama actual.
-- git merge --no-ff [nombre de la rama] : fusiona la rama especificada en la rama actual, creando un commit de fusión incluso si la fusión podría haberse realizado con un avance rápido.
+    Entramos como modo merge
+        - git merge --abort: abortamos el merge.
+        - git merge --continue: luego de solucionar los conflictos y tengamos todos en area de prepacion se ejecuta este comando para cerrar el merge y el hace commit cuidad abre la terminal de vim para mandar el mensaje del commit.
+- git merge --no-ff [nombre de la rama] : fusiona la rama especificada en la rama actual, creando un commit de fusión incluso si la fusión podría haberse realizado con un avance rápido(fast-forward).
 - git merge --squash [nombre de la rama] : fusiona la rama especificada en la rama actual, pero aplana todos los commits en un solo commit.
 - git merge --abort : aborta una fusión en curso y restaura el estado del repositorio al estado anterior a la fusión.
 - git merge --continue : continúa una fusión después de resolver conflictos.
@@ -112,6 +115,8 @@ aqui vamos
 - git log --graph : muestra el historial de commits en forma de gráfico.
 - git log --all : muestra el historial de commits de todas las ramas del repositorio.
 - git log -[numero]: muestre los commits desde el ultimo hasta el numero que se dijite.
+- git log --date-order: muestra los commit en orden de fecha.
+- git log --oneline --all --graph --date-order: mescla de los anteriores.
 
 - git stash : guarda los cambios no confirmados en un área temporal y limpia el área de trabajo.
 - git stash list : muestra la lista de cambios guardados en el stash.
@@ -205,6 +210,7 @@ Equivalente con pull: git pull --ff-only
 - git log --oneline : muestra el historial de commits en una sola línea por commit
 - git log --graph : muestra el historial de commits en forma de gráfico.
 - git log --stat : muestra el historial de commits con un resumen de los archivos modificados y el número de líneas añadidas y eliminadas.
+- git log --oneline --graph --date-order --all: mezcla de los anteriores
 
 - git diff : muestra las diferencias entre los archivos modificados y la última versión confirmada
 - git diff [hash del commit] : muestra las diferencias entre el commit especificado y el estado actual
@@ -258,6 +264,3 @@ Para usar esta funcionalidad, es necesario tener instalado un visor de diferenci
 - conversión de mensajes de commit: [https://www.conventionalcommits.org/en/v1.0.0/](https://www.conventionalcommits.org/en/v1.0.0/)
 
 - git reflog : muestra el historial de referencias del repositorio, incluyendo los commits recientes y las ramas.
-
-
-esta linea la cree en la rama33 
