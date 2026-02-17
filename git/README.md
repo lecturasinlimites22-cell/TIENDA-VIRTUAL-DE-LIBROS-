@@ -254,14 +254,21 @@ Para usar esta funcionalidad, es necesario tener instalado un visor de diferenci
 
 - git revert [hash del commit] : crea un nuevo commit que revierte los cambios del commit especificado, sin eliminar el commit original del historial.
 - git revert --continue : continúa un revert después de resolver conflictos.
-- line de prueba para pull
+
 - git revert --abort : aborta un revert en curso y restaura el estado del repositorio al estado anterior al revert.
 - git revert --skip : omite el commit actual durante un revert.
 
 - git switch [nombre de la rama] : cambia a la rama especificada
+<<<<<<< HEAD
 -------------esta es la linea que va generar conflicto
+=======
+- 
+esta es la linea que va a generar conflicto
+>>>>>>> f7bc05713ae66d22d58bf3bdc5173f0a2b8f7122
 - git push origin --delete {nombre-de-la-rama] : elimina la rama remota especificada
 
 - conversión de mensajes de commit: [https://www.conventionalcommits.org/en/v1.0.0/](https://www.conventionalcommits.org/en/v1.0.0/)
 
 - git reflog : muestra el historial de referencias del repositorio, incluyendo los commits recientes y las ramas
+- line de prueba para pull
+  linea de prueba 2 
