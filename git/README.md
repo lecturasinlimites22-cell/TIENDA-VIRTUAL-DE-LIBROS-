@@ -159,7 +159,7 @@ Nota: las siguientes se necesita configurar GPG para firmar las etiquetas.
 - git fetch --tags : descarga todas las etiquetas del repositorio remoto sin fusionarlas en la rama actual.
 
     Ejemplo rápido (flujo típico):
-
+esta linea es para gererar un conflicto y aprender arreglarlo con un rebase
 Traer cambios del remoto
 git fetch origin
 Ver qué cambió en main sin tocar tu rama local
