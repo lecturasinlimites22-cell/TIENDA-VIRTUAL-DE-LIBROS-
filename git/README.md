@@ -254,6 +254,7 @@ Para usar esta funcionalidad, es necesario tener instalado un visor de diferenci
 
 - git revert [hash del commit] : crea un nuevo commit que revierte los cambios del commit especificado, sin eliminar el commit original del historial.
 - git revert --continue : continúa un revert después de resolver conflictos.
+- line de prueba para pull
 - git revert --abort : aborta un revert en curso y restaura el estado del repositorio al estado anterior al revert.
 - git revert --skip : omite el commit actual durante un revert.
 
