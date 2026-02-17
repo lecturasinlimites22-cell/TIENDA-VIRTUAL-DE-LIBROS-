@@ -169,7 +169,7 @@ Si quieres actualizar tu main con lo descargado
 git checkout main
 git merge --ff-only origin/main (o, si prefieres rebase: git rebase origin/main)
 Equivalente con pull: git pull --ff-only
-
+--------------------------------------------------------------------------------------------------
 - git pull: descarga los cambios del repositorio remoto y los fusiona en la rama actual.
 - git pull [remoto] : descarga los cambios del repositorio remoto especificado y los fusiona en la rama actual.
 - git pull --rebase : descarga los cambios del repositorio remoto y los aplica en la parte superior de la rama actual, reescribiendo el historial de commits.
@@ -177,7 +177,7 @@ Equivalente con pull: git pull --ff-only
 - git pull --ff-only : descarga los cambios del repositorio remoto y los fusiona en la rama actual solo si se puede hacer un avance rápido, de lo contrario, muestra un error.
 - git pull --no-ff : descarga los cambios del repositorio remoto y los fusiona en la rama actual, creando un commit de fusión incluso si la fusión podría haberse realizado con un avance rápido.
 - git pull --all : descarga los cambios de todos los repositorios remotos y los fusiona en la rama actual.
-
+-------------------------------------------------------------------------------------------------
 - git push   : sube los cambios confirmados en la rama actual al repositorio remoto.
 - git push [remoto] : sube los cambios confirmados en la rama actual al repositorio remoto especificado.
 - git push [remoto] [nombre de la rama] : sube los cambios confirmados en la rama actual al repositorio remoto especificado y a la rama especificada.
