@@ -267,4 +267,6 @@ esta es la linea que va a generar conflicto
 
 - git reflog : muestra el historial de referencias del repositorio, incluyendo los commits recientes y las ramas
 - line de prueba para pull
-  linea de prueba 2 
+  linea de prueba 2
+  
+linea de ejeplo de --no-ff
