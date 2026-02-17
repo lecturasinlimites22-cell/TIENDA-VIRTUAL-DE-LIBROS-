@@ -259,7 +259,7 @@ Para usar esta funcionalidad, es necesario tener instalado un visor de diferenci
 - git revert --skip : omite el commit actual durante un revert.
 
 - git switch [nombre de la rama] : cambia a la rama especificada
-
+-------------esta es la linea que va generar conflicto
 - git push origin --delete {nombre-de-la-rama] : elimina la rama remota especificada
 
 - conversión de mensajes de commit: [https://www.conventionalcommits.org/en/v1.0.0/](https://www.conventionalcommits.org/en/v1.0.0/)
