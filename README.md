@@ -3,13 +3,13 @@
 ## Diagramas
 
 ### Deployment Diagram 2
-![Deployment Diagram 2](./PROYECTO/TRIMESTRE-3/Deployment%20Diagram2.jpg)
+![Deployment Diagram 2](./Deployment_Diagram2.jpg)
 
 ### Diagrama de Clases
-![Diagrama de Clases](./PROYECTO/TRIMESTRE-3/Diagrama%20de%20Clases2.png)
+![Diagrama de Clases](./Diagrama_de_Clases2.png)
 
-### Entity Relationship Diagram 1
-![Entity Relationship Diagram 1](./PROYECTO/TRIMESTRE-3/Entity%20Relationship%20Diagram1.jpg)
+### Diagrama Entidad - Relación
+![Diagrama Entidad - Relación](./Diagrama_Entidad_Relacion1.jpg)
 
 ### Entity Relationship Diagram 2
-![Entity Relationship Diagram 2](./PROYECTO/TRIMESTRE-3/Entity%20Relationship%20Diagram2.jpg)
+![Entity Relationship Diagram 2](./Entity_Relationship_Diagram2.jpg)
