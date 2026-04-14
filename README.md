@@ -1,15 +1,15 @@
-# TIENDA-VIRTUAL-DE-LIBROS-
+# TIENDA-VIRTUAL-DE-LIBROS
 
 ## Diagramas
 
 ### Deployment Diagram 1
-![Deployment Diagram 1](./Deployment%20Diagram1.jpg)
+![Deployment Diagram 1](./PROYECTO/TRIMESTRE-3/Deployment%20Diagram1.jpg)
 
 ### Deployment Diagram 2
-![Deployment Diagram 2](./Deployment%20Diagram2.jpg)
+![Deployment Diagram 2](./PROYECTO/TRIMESTRE-3/Deployment%20Diagram2.jpg)
 
 ### Diagrama de Clases
-![Diagrama de Clases](./Diagrama%20de%20Clases2.png)
+![Diagrama de Clases](./PROYECTO/TRIMESTRE-3/Diagrama%20de%20Clases2.png)
 
 ### Entity Relationship Diagram
-![Entity Relationship Diagram](./Entity%20Relationship%20Diagram1.jpg)
+![Entity Relationship Diagram](./PROYECTO/TRIMESTRE-3/Diagrama%20Entidad%20-%20Relaci%C3%B3n1.jpg)
