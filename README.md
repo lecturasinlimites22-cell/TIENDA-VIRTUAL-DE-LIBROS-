@@ -12,4 +12,4 @@
 ![Diagrama de Clases](./PROYECTO/TRIMESTRE-3/Diagrama%20de%20Clases2.png)
 
 ### Entity Relationship Diagram
-![Entity Relationship Diagram](./PROYECTO/TRIMESTRE-3/Diagrama%20Entidad%20-%20Relaci%C3%B3n1.jpg)
+![Entity Relationship Diagram](./PROYECTO/TRIMESTRE-3/Entity%20Relationship%20Diagram1.jpg)
