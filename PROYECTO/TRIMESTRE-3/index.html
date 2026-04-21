@@ -678,24 +678,7 @@
                         <p class="muted-text mb-0">Bienvenido al sistema de autenticacion de la libreria. Inicia sesion o registrate para entrar al modulo principal, consultar catalogo, pedidos y administrar la operacion.</p>
                     </div>
 
-                    <div class="hero-strip">
-                        <div class="hero-chip">
-                            <small>Catalogo</small>
-                            <strong>120+</strong>
-                            <span class="muted-text">Titulos listos para consulta.</span>
-                        </div>
-                        <div class="hero-chip">
-                            <small>Pedidos</small>
-                            <strong>24h</strong>
-                            <span class="muted-text">Seguimiento de compras y pagos.</span>
-                        </div>
-                        <div class="hero-chip">
-                            <small>Soporte</small>
-                            <strong>Activo</strong>
-                            <span class="muted-text">Chat y ayuda para el usuario.</span>
-                        </div>
-                    </div>
-
+                    
                     <div class="auth-switch">
                         <button id="tab-login" class="active" type="button">Iniciar Sesion</button>
                         <button id="tab-register" type="button">Registrarse</button>
@@ -765,7 +748,7 @@
                                 </div>
                                 <label class="register-check full-width">
                                     <input id="register-terms" type="checkbox" checked required>
-                                    <span>Acepto el tratamiento de datos para esta demo y autorizo la creacion de mi cuenta de cliente.</span>
+                                    <span>Acepto el tratamiento de datos para esta demo y autorizo la creacion de mi cuenta segun el rol seleccionado.</span>
                                 </label>
                             </div>
                             <button class="action-button login-submit" type="submit">Crear cuenta y continuar</button>
@@ -773,10 +756,10 @@
                         </form>
                         <div class="register-tips">
                             <strong>Mejoras del registro</strong>
-                            <p class="muted-text mb-1">Ahora el registro valida campos obligatorios, evita usuarios repetidos y completa mejor el perfil del cliente.</p>
-                            <p class="muted-text mb-0">Al crear la cuenta, el sistema inicia sesion automaticamente y guarda el cliente en la demo.</p>
+                            <p class="muted-text mb-1">Ahora el registro valida campos obligatorios, evita usuarios repetidos y completa mejor el perfil segun el rol elegido.</p>
+                            <p class="muted-text mb-0">Si eliges Usuario se guarda como cliente. Si eliges Administrador se guarda como personal administrativo.</p>
                         </div>
-                        <p class="login-helper">El registro agrega el usuario a la demostracion y abre el modulo principal.</p>
+                        <p id="register-helper" class="login-helper">El registro agrega el usuario a la demostracion y abre el modulo principal.</p>
                     </div>
                 </div>
             </section>
@@ -792,7 +775,6 @@
                     </div>
                     <div class="d-flex gap-2 flex-wrap justify-content-center">
                         <button class="back-button" type="button" onclick="showScreen('user')">Inicio</button>
-                        <button class="nav-button" type="button" onclick="showScreen('catalog')">Catalogo</button>
                         <button id="user-admin-shortcut" class="nav-button" type="button" onclick="showScreen('admin')">Admin</button>
                         <button class="danger-button" type="button" onclick="goLogin()">Cerrar Sesion</button>
                     </div>
@@ -801,27 +783,7 @@
                 <div class="panel-box mb-4 user-panel-width">
                     <div class="toolbar">
                         <div>
-                            <h2 class="h4 text-info mb-1">Modulo principal del sistema</h2>
-                            <p id="user-welcome" class="muted-text mb-0"></p>
-                        </div>
-                        <span class="role-indicator">Vista Usuario</span>
-                    </div>
-                    <div class="quick-access-grid">
-                        <div class="quick-access-card">
-                            <small>Ruta principal</small>
-                            <strong>Explorar catalogo</strong>
-                            <p class="muted-text mb-0">Consulta libros, editorial, categoria y disponibilidad.</p>
-                        </div>
-                        <div class="quick-access-card">
-                            <small>Proceso de compra</small>
-                            <strong>Pedidos y pagos</strong>
-                            <p class="muted-text mb-0">Visualiza tus pedidos y elige tarjeta, Nequi o PSE.</p>
-                        </div>
-                        <div class="quick-access-card">
-                            <small>Atencion</small>
-                            <strong>Perfil y soporte</strong>
-                            <p class="muted-text mb-0">Actualiza datos, abre chat y gestiona favoritos.</p>
-                        </div>
+                            
                     </div>
                 </div>
 
@@ -861,11 +823,7 @@
                         <h3>Medios de Pago</h3>
                         <p class="muted-text mb-0">Consulta tarjetas y metodos de pago disponibles.</p>
                     </div>
-                    <div id="admin-menu-card" class="menu-card" onclick="showScreen('admin')">
-                        <div class="menu-icon">ADM</div>
-                        <h3>Administrador</h3>
-                        <p class="muted-text mb-0">Accede al panel de control administrativo y al seguimiento de ventas.</p>
-                    </div>
+                    
                 </div>
 
                 <div class="stats-grid mt-4 user-panel-width">
@@ -1572,12 +1530,14 @@
     <script>
         const state = {
             authMode: 'login',
+            isAuthenticated: false,
             currentRole: 'Usuario',
             currentUser: 'demo.usuario',
             currentName: 'Demo Usuario',
             currentEmail: 'demo@libreria.com',
             currentPhone: '3000000000',
             currentCity: 'Bogota',
+            currentAdminSection: '',
             accounts: [
                 {
                     role: 'Usuario',
@@ -1605,8 +1565,8 @@
             ],
             favoriteIds: [1, 3],
             clientes: [
-                { id: 1, nombre: 'Laura Gomez', telefono: '3001234567', direccion: 'Bogota' },
-                { id: 2, nombre: 'Carlos Ruiz', telefono: '3019876543', direccion: 'Medellin' }
+                { id: 1, nombre: 'Laura Gomez', usuario: 'laura.gomez', correo: 'laura@libreria.com', telefono: '3001234567', direccion: 'Bogota' },
+                { id: 2, nombre: 'Carlos Ruiz', usuario: 'carlos.ruiz', correo: 'carlos@libreria.com', telefono: '3019876543', direccion: 'Medellin' }
             ],
             empleados: [
                 { id: 1, nombre: 'Ana', apellido: 'Perez', cargo: 'Cajera', usuario: 'ana.perez' },
@@ -1628,7 +1588,7 @@
         }
 
         function isAdminSession() {
-            return state.currentRole === 'Administrador';
+            return state.isAuthenticated && state.currentRole === 'Administrador';
         }
 
         function isAdminScreen(name) {
@@ -1652,6 +1612,8 @@
         }
 
         function goLogin() {
+            state.isAuthenticated = false;
+            state.currentAdminSection = '';
             setAuthMode('login');
             showScreen('login');
         }
@@ -1666,14 +1628,15 @@
             state.currentRole = role;
             document.getElementById('role-indicator').textContent = role === 'Administrador' ? 'Modo Administrador' : 'Modo Usuario';
             document.getElementById('role-message').textContent = role === 'Administrador'
-                ? 'Has seleccionado Administrador. Inicia sesion con credenciales de administrador.'
+                ? 'Has seleccionado Administrador. Puedes iniciar sesion o registrar una nueva cuenta administrativa.'
                 : 'Has seleccionado Usuario. Inicia sesion o registrate.';
             document.getElementById('btn-role-user').classList.toggle('active', role === 'Usuario');
             document.getElementById('btn-role-admin').classList.toggle('active', role === 'Administrador');
-            document.getElementById('tab-register').classList.toggle('hidden-role', role === 'Administrador');
+            document.getElementById('register-helper').textContent = role === 'Administrador'
+                ? 'El registro crea un nuevo administrador y lo agrega tambien al listado de empleados.'
+                : 'El registro agrega el usuario a la demostracion y abre el modulo principal.';
 
             if (role === 'Administrador') {
-                setAuthMode('login');
                 document.getElementById('login-username').value = 'admin.libreria';
                 document.getElementById('login-password').value = '123456';
             }
@@ -1705,6 +1668,7 @@
         }
 
         function setCurrentSession(account) {
+            state.isAuthenticated = true;
             state.currentRole = account.role;
             state.currentName = account.name;
             state.currentUser = account.username;
@@ -1737,9 +1701,36 @@
             state.clientes.push({
                 id: nextId,
                 nombre: data.name,
+                usuario: data.username,
+                correo: data.email,
                 telefono: data.phone,
                 direccion: data.city
             });
+        }
+
+        function createEmployeeFromRegister(data) {
+            const nextId = state.empleados.length ? Math.max(...state.empleados.map(empleado => empleado.id)) + 1 : 1;
+            const nameParts = data.name.trim().split(/\s+/);
+            state.empleados.push({
+                id: nextId,
+                nombre: nameParts[0] || data.name,
+                apellido: nameParts.slice(1).join(' ') || 'Administrador',
+                cargo: 'Administrador',
+                usuario: data.username
+            });
+        }
+
+        function renderAdminClientsRows() {
+            return state.clientes.map(item => `
+                <tr>
+                    <td>${item.id}</td>
+                    <td>${item.nombre}</td>
+                    <td>${item.usuario || 'sin.usuario'}</td>
+                    <td>${item.correo || buildEmailFromUsername(item.nombre)}</td>
+                    <td>${item.telefono}</td>
+                    <td>${item.direccion}</td>
+                </tr>
+            `).join('');
         }
 
         function formatPrice(price) {
@@ -1831,9 +1822,14 @@
             document.getElementById('admin-books-table').innerHTML = renderBooksRows();
             document.getElementById('all-books-table').innerHTML = renderAllBooksRows();
             document.getElementById('favorites-table').innerHTML = renderFavoriteRows();
+
+            if (isAdminSession() && state.currentAdminSection) {
+                showAdminSection(state.currentAdminSection);
+            }
         }
 
         function showAdminSection(section) {
+            state.currentAdminSection = section;
             const dynamic = document.getElementById('admin-dynamic');
             dynamic.style.display = 'block';
 
@@ -1866,8 +1862,8 @@
                     </div>
                     <div class="table-shell">
                         <table class="data-table">
-                            <thead><tr><th>ID</th><th>Nombre</th><th>Telefono</th><th>Direccion</th></tr></thead>
-                            <tbody>${state.clientes.map(item => `<tr><td>${item.id}</td><td>${item.nombre}</td><td>${item.telefono}</td><td>${item.direccion}</td></tr>`).join('')}</tbody>
+                            <thead><tr><th>ID</th><th>Nombre</th><th>Usuario</th><th>Correo</th><th>Telefono</th><th>Ciudad</th></tr></thead>
+                            <tbody>${renderAdminClientsRows()}</tbody>
                         </table>
                     </div>
                 `;
@@ -2013,18 +2009,14 @@
                 return;
             }
 
-            if (usernameExists(username)) {
-                showAuthFeedback('register-feedback', 'Ese usuario ya existe. Elige uno diferente.');
-                return;
-            }
-
             if (emailExists(email)) {
                 showAuthFeedback('register-feedback', 'Ese correo ya esta registrado. Usa otro correo.');
                 return;
             }
 
+            const targetRole = state.currentRole;
             const newAccount = {
-                role: 'Usuario',
+                role: targetRole,
                 name,
                 username,
                 email,
@@ -2034,13 +2026,17 @@
             };
 
             state.accounts.push(newAccount);
-            createClientFromRegister(newAccount);
+            if (targetRole === 'Administrador') {
+                createEmployeeFromRegister(newAccount);
+            } else {
+                createClientFromRegister(newAccount);
+            }
             setCurrentSession(newAccount);
-            setRole('Usuario');
-            showAuthFeedback('register-feedback', 'Cuenta creada correctamente. Entrando al modulo principal...', 'success');
+            setRole(targetRole);
+            showAuthFeedback('register-feedback', `Cuenta de ${targetRole.toLowerCase()} creada correctamente. Entrando al modulo principal...`, 'success');
             event.target.reset();
             document.getElementById('register-terms').checked = true;
-            showScreen('user');
+            showScreen(targetRole === 'Administrador' ? 'admin' : 'user');
         });
 
         document.getElementById('register-name').addEventListener('blur', event => {
