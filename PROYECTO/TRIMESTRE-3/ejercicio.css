@@ -1,0 +1,21 @@
+:root {
+    --app-font: "Segoe UI", "Trebuchet MS", sans-serif;
+}
+
+body {
+    font-family: var(--app-font);
+}
+
+.menu-card,
+.payment-card,
+.panel-box,
+.stat-box {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.menu-card:hover,
+.payment-card:hover,
+.panel-box:hover,
+.stat-box:hover {
+    transform: translateY(-2px);
+}
