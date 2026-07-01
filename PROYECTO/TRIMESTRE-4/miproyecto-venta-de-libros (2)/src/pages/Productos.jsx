@@ -1,16 +1,63 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Foooter";
 import Nav from "../components/Nav";
-import { libros } from "../data/libros";
+import { libros as librosBase } from "../data/libros";
 
 function formatPrice(price) {
     return `$${Number(price).toFixed(Number(price) % 1 === 0 ? 0 : 2)}`;
 }
 
+function loadStorage(key, fallback) {
+    if (typeof window === "undefined") return fallback;
+    try {
+        const saved = window.localStorage.getItem(key);
+        return saved ? JSON.parse(saved) : fallback;
+    } catch {
+        return fallback;
+    }
+}
+
+function saveStorage(key, value) {
+    if (typeof window === "undefined") return;
+    try {
+        window.localStorage.setItem(key, JSON.stringify(value));
+    } catch {
+        // ignore localStorage write errors
+    }
+}
+
 function Productos() {
-    const [favoritos, setFavoritos] = useState([1, 3]);
+    const [favoritos, setFavoritos] = useState(() => loadStorage("bookstore-favorites", [1, 3]));
     const [mensaje, setMensaje] = useState("");
+    const [libros, setLibros] = useState(() => loadStorage("bookstore-books", librosBase));
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    useEffect(() => saveStorage("bookstore-favorites", favoritos), [favoritos]);
+    useEffect(() => saveStorage("bookstore-books", libros), [libros]);
+
+    useEffect(() => {
+        async function cargarLibros() {
+            try {
+                setLoading(true);
+                setError("");
+                const respuesta = await fetch("/api/books");
+                if (!respuesta.ok) throw new Error("No se pudo cargar");
+                const datos = await respuesta.json();
+                if (Array.isArray(datos) && datos.length) {
+                    setLibros(datos);
+                }
+            } catch {
+                setError("No fue posible cargar los libros desde la API. Se mostrará la información local.");
+                setLibros(librosBase);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        cargarLibros();
+    }, []);
 
     function toggleFavorite(id) {
         setFavoritos((actuales) =>
@@ -36,6 +83,8 @@ function Productos() {
                     </div>
 
                     {mensaje && <p className="auth-feedback success">{mensaje}</p>}
+                    {loading && <p className="auth-feedback">Cargando libros desde la simulación...</p>}
+                    {error && <p className="auth-feedback error">{error}</p>}
 
                     <div className="books-grid">
                         {libros.map((libro) => {

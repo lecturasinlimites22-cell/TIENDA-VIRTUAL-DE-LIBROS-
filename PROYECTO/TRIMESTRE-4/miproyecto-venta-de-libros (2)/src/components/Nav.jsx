@@ -59,7 +59,7 @@ function MenuIcon() {
     );
 }
 
-function Nav({ menuAbierto, setMenuAbierto, isLoggedIn, searchTerm, onSearchTermChange, onSearchSubmit, onSearchClear, onHomeClick }) {
+function Nav({ menuAbierto, setMenuAbierto, isLoggedIn, onLogout, searchTerm, onSearchTermChange, onSearchSubmit, onSearchClear, onHomeClick }) {
     return (
         <nav className="store-nav" aria-label="Navegacion principal">
             <div className="nav-topbar">
@@ -115,7 +115,18 @@ function Nav({ menuAbierto, setMenuAbierto, isLoggedIn, searchTerm, onSearchTerm
                 </form>
 
                 <div className="nav-actions">
-                    {isLoggedIn && <Link to="/perfil"><UserIcon /></Link>}
+                    {isLoggedIn ? (
+                        <>
+                            <Link to="/perfil" title="Mi perfil"><UserIcon /></Link>
+                            <button type="button" className="logout-button" onClick={onLogout}>
+                                Cerrar sesión
+                            </button>
+                        </>
+                    ) : (
+                        <NavLink className="login-link" to="/login">
+                            Iniciar sesión
+                        </NavLink>
+                    )}
                     <Link to="/favoritos"><HeartIcon /></Link>
                     <Link to="/pedidos"><TruckIcon /></Link>
                     <Link to="/carrito"><CartIcon /></Link>

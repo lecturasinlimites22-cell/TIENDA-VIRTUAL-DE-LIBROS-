@@ -8,6 +8,15 @@ const projectRoot = fileURLToPath(new URL('.', import.meta.url))
 export default defineConfig({
   root: projectRoot,
   plugins: [react()],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
+  },
   build: {
     outDir: 'dist',
     emptyOutDir: true,

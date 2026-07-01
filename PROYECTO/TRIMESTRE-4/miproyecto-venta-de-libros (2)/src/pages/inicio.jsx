@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Foooter";
 import Nav from "../components/Nav";
@@ -33,6 +33,25 @@ function normalizeValue(value) {
     return String(value || "").trim().toLowerCase();
 }
 
+function loadStorage(key, fallback) {
+    if (typeof window === "undefined") return fallback;
+    try {
+        const saved = window.localStorage.getItem(key);
+        return saved ? JSON.parse(saved) : fallback;
+    } catch {
+        return fallback;
+    }
+}
+
+function saveStorage(key, value) {
+    if (typeof window === "undefined") return;
+    try {
+        window.localStorage.setItem(key, JSON.stringify(value));
+    } catch {
+        // ignore storage errors
+    }
+}
+
 function BookIcon() {
     return (
         <svg viewBox="0 0 64 64" aria-hidden="true">
@@ -52,30 +71,135 @@ function Inicio({ initialScreen = "home", initialAuthMode = "login" }) {
     const [menuAbierto, setMenuAbierto] = useState(false);
 
     const [feedback, setFeedback] = useState("");
-    const [session, setSession] = useState(startsLoggedIn ? cuentasBase[0] : null);
-    const [accounts, setAccounts] = useState(cuentasBase);
-    const [books, setBooks] = useState(librosBase);
-    const [cartItems, setCartItems] = useState([]);
-    const [selectedCategory, setSelectedCategory] = useState("Todos");
-    const [favorites, setFavorites] = useState([1, 3]);
-    const [clientes, setClientes] = useState(clientesBase);
-    const [empleados] = useState(empleadosBase);
-    const [chatMessages, setChatMessages] = useState([]);
-    const [downloadAccess, setDownloadAccess] = useState([]);
-    const [pendingDownload, setPendingDownload] = useState(null);
-    const [pendingDownloadEmail, setPendingDownloadEmail] = useState("");
-    const [verificationBook, setVerificationBook] = useState(null);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [searchQuery, setSearchQuery] = useState("");
-    const [searchRestoreCategory, setSearchRestoreCategory] = useState("Todos");
-    const [selectedBank, setSelectedBank] = useState("");
-    const [paymentCompleted, setPaymentCompleted] = useState(false);
-    const [paymentMethod, setPaymentMethod] = useState("");
-    const [paymentDetailUsed, setPaymentDetailUsed] = useState("");
-    const [lastPurchase, setLastPurchase] = useState(null);
-    const [selectedBook, setSelectedBook] = useState(null);
-    const [termsAccepted, setTermsAccepted] = useState(false);
-    const [postAuthScreen, setPostAuthScreen] = useState(null);
+    const [session, setSession] = useState(() => {
+        if (typeof window === "undefined") {
+            return startsLoggedIn ? cuentasBase[0] : null;
+        }
+
+        try {
+            const saved = window.localStorage.getItem("bookstore-session");
+            if (saved) return JSON.parse(saved);
+        } catch {
+            // ignore invalid storage value
+        }
+
+        return startsLoggedIn ? cuentasBase[0] : null;
+    });
+    const [accounts, setAccounts] = useState(() => loadStorage("bookstore-accounts", cuentasBase));
+    const [books, setBooks] = useState(() => loadStorage("bookstore-books", librosBase));
+    const [cartItems, setCartItems] = useState(() => {
+        if (typeof window === "undefined") return [];
+        try {
+            const saved = window.localStorage.getItem("bookstore-cart");
+            return saved ? JSON.parse(saved) : [];
+        } catch {
+            return [];
+        }
+    });
+
+    const [selectedCategory, setSelectedCategory] = useState(() => loadStorage("bookstore-selectedCategory", "Todos"));
+    const [favorites, setFavorites] = useState(() => loadStorage("bookstore-favorites", [1, 3]));
+    const [clientes, setClientes] = useState(() => loadStorage("bookstore-clientes", clientesBase));
+    const [empleados, setEmpleados] = useState(() => loadStorage("bookstore-empleados", empleadosBase));
+    const [chatMessages, setChatMessages] = useState(() => loadStorage("bookstore-chatMessages", []));
+    const [downloadAccess, setDownloadAccess] = useState(() => loadStorage("bookstore-downloadAccess", []));
+    const [pendingDownload, setPendingDownload] = useState(() => loadStorage("bookstore-pendingDownload", null));
+    const [pendingDownloadEmail, setPendingDownloadEmail] = useState(() => loadStorage("bookstore-pendingDownloadEmail", ""));
+    const [verificationBook, setVerificationBook] = useState(() => loadStorage("bookstore-verificationBook", null));
+    const [searchTerm, setSearchTerm] = useState(() => loadStorage("bookstore-searchTerm", ""));
+    const [searchQuery, setSearchQuery] = useState(() => loadStorage("bookstore-searchQuery", ""));
+    const [searchRestoreCategory, setSearchRestoreCategory] = useState(() => loadStorage("bookstore-searchRestoreCategory", "Todos"));
+    const [selectedBank, setSelectedBank] = useState(() => loadStorage("bookstore-selectedBank", ""));
+    const [paymentCompleted, setPaymentCompleted] = useState(() => loadStorage("bookstore-paymentCompleted", false));
+    const [paymentMethod, setPaymentMethod] = useState(() => loadStorage("bookstore-paymentMethod", ""));
+    const [paymentDetailUsed, setPaymentDetailUsed] = useState(() => loadStorage("bookstore-paymentDetailUsed", ""));
+    const [lastPurchase, setLastPurchase] = useState(() => loadStorage("bookstore-lastPurchase", null));
+    const [selectedBook, setSelectedBook] = useState(() => loadStorage("bookstore-selectedBook", null));
+    const [termsAccepted, setTermsAccepted] = useState(() => loadStorage("bookstore-termsAccepted", false));
+    const [postAuthScreen, setPostAuthScreen] = useState(() => loadStorage("bookstore-postAuthScreen", null));
+
+    useEffect(() => saveStorage("bookstore-session", session), [session]);
+    useEffect(() => saveStorage("bookstore-accounts", accounts), [accounts]);
+    useEffect(() => saveStorage("bookstore-books", books), [books]);
+    useEffect(() => saveStorage("bookstore-cart", cartItems), [cartItems]);
+    useEffect(() => saveStorage("bookstore-selectedCategory", selectedCategory), [selectedCategory]);
+    useEffect(() => saveStorage("bookstore-favorites", favorites), [favorites]);
+    useEffect(() => saveStorage("bookstore-clientes", clientes), [clientes]);
+    useEffect(() => saveStorage("bookstore-empleados", empleados), [empleados]);
+    useEffect(() => saveStorage("bookstore-chatMessages", chatMessages), [chatMessages]);
+    useEffect(() => saveStorage("bookstore-downloadAccess", downloadAccess), [downloadAccess]);
+    useEffect(() => saveStorage("bookstore-pendingDownload", pendingDownload), [pendingDownload]);
+    useEffect(() => saveStorage("bookstore-pendingDownloadEmail", pendingDownloadEmail), [pendingDownloadEmail]);
+    useEffect(() => saveStorage("bookstore-verificationBook", verificationBook), [verificationBook]);
+    useEffect(() => saveStorage("bookstore-searchTerm", searchTerm), [searchTerm]);
+    useEffect(() => saveStorage("bookstore-searchQuery", searchQuery), [searchQuery]);
+    useEffect(() => saveStorage("bookstore-searchRestoreCategory", searchRestoreCategory), [searchRestoreCategory]);
+    useEffect(() => saveStorage("bookstore-selectedBank", selectedBank), [selectedBank]);
+    useEffect(() => saveStorage("bookstore-paymentCompleted", paymentCompleted), [paymentCompleted]);
+    useEffect(() => saveStorage("bookstore-paymentMethod", paymentMethod), [paymentMethod]);
+    useEffect(() => saveStorage("bookstore-paymentDetailUsed", paymentDetailUsed), [paymentDetailUsed]);
+    useEffect(() => saveStorage("bookstore-lastPurchase", lastPurchase), [lastPurchase]);
+    useEffect(() => saveStorage("bookstore-selectedBook", selectedBook), [selectedBook]);
+    useEffect(() => saveStorage("bookstore-termsAccepted", termsAccepted), [termsAccepted]);
+    useEffect(() => saveStorage("bookstore-postAuthScreen", postAuthScreen), [postAuthScreen]);
+
+    useEffect(() => {
+        async function cargarDatosIniciales() {
+            try {
+                const [respuestaUsuarios, respuestaLibros, respuestaClientes, respuestaEmpleados] = await Promise.all([
+                    fetch("/api/user"),
+                    fetch("/api/books"),
+                    fetch("/api/clients"),
+                    fetch("/api/employees"),
+                ]);
+
+                if (respuestaUsuarios.ok) {
+                    const usuariosApi = await respuestaUsuarios.json();
+                    const cuentasApi = Array.isArray(usuariosApi)
+                        ? usuariosApi.map((usuario) => ({
+                            id: usuario.id,
+                            role: usuario.rol === 1 ? "Administrador" : "Usuario",
+                            name: usuario.name || usuario.nombre || usuario.email?.split("@")[0] || "Usuario",
+                            username: usuario.username || usuario.email?.split("@")[0] || `usuario${usuario.id}`,
+                            email: usuario.email,
+                            password: usuario.password,
+                            phone: usuario.phone || "",
+                            city: usuario.city || "",
+                        }))
+                        : [];
+                    if (cuentasApi.length) {
+                        setAccounts(cuentasApi);
+                    }
+                }
+
+                if (respuestaLibros.ok) {
+                    const librosApi = await respuestaLibros.json();
+                    if (Array.isArray(librosApi) && librosApi.length) {
+                        setBooks(librosApi.map((libro) => ({ ...libro, precio: Number(libro.precio), stock: Number(libro.stock) })));
+                    }
+                }
+
+                if (respuestaClientes.ok) {
+                    const clientesApi = await respuestaClientes.json();
+                    if (Array.isArray(clientesApi) && clientesApi.length) {
+                        setClientes(clientesApi);
+                    }
+                }
+
+                if (respuestaEmpleados.ok) {
+                    const empleadosApi = await respuestaEmpleados.json();
+                    if (Array.isArray(empleadosApi) && empleadosApi.length) {
+                        setEmpleados(empleadosApi);
+                    }
+                }
+            } catch {
+                // Se mantiene el contenido local si la API no responde.
+            }
+        }
+
+        cargarDatosIniciales();
+    }, []);
+
     const now = useMemo(() => new Date().toLocaleString("es-CO"), []);
     const isAuthenticated = Boolean(session);
     const sidebarCategories = [
@@ -397,7 +521,7 @@ function logout() {
         setFeedback("Credenciales invalidas. Administrador: admin.libreria / 123456. Usuario demo: demo.usuario / 123456.");
     }
 
-    function handleRegister(event) {
+async function handleRegister(event) {
         event.preventDefault();
         const form = new FormData(event.currentTarget);
         const name = String(form.get("name") || "").trim();
@@ -440,7 +564,26 @@ function logout() {
             city,
         };
 
-        setAccounts((current) => [...current, newAccount]);
+        try {
+            const respuesta = await fetch("/api/user", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    ...newAccount,
+                    rol: 2,
+                }),
+            });
+
+            if (respuesta.ok) {
+                const usuarioCreado = await respuesta.json();
+                setAccounts((current) => [...current, { ...newAccount, id: usuarioCreado.id }]);
+            } else {
+                setAccounts((current) => [...current, newAccount]);
+            }
+        } catch {
+            setAccounts((current) => [...current, newAccount]);
+        }
+
         setClientes((current) => [
             ...current,
             {
@@ -459,34 +602,66 @@ function logout() {
         setPostAuthScreen(null);
     }
 
-    function addBook(event) {
+    async function addBook(event) {
         event.preventDefault();
         const form = new FormData(event.currentTarget);
-        setBooks((current) => [
-            ...current,
-            {
-                id: current.length ? Math.max(...current.map((item) => item.id)) + 1 : 1,
-                titulo: form.get("titulo"),
-                precio: Number(form.get("precio")),
-                stock: Number(form.get("stock")),
-                categoria: form.get("categoria"),
-                editorial: form.get("editorial"),
-            },
-        ]);
+        const nuevoLibro = {
+            id: Date.now(),
+            titulo: form.get("titulo"),
+            precio: Number(form.get("precio")),
+            stock: Number(form.get("stock")),
+            categoria: form.get("categoria"),
+            editorial: form.get("editorial"),
+        };
+
+        try {
+            const respuesta = await fetch("/api/books", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(nuevoLibro),
+            });
+            if (respuesta.ok) {
+                const libroCreado = await respuesta.json();
+                setBooks((current) => [...current, libroCreado]);
+            } else {
+                setBooks((current) => [...current, nuevoLibro]);
+            }
+        } catch {
+            setBooks((current) => [...current, nuevoLibro]);
+        }
+
         event.currentTarget.reset();
     }
 
-    function deleteBook(id) {
+    async function deleteBook(id) {
+        try {
+            await fetch(`/api/books/${id}`, { method: "DELETE" });
+        } catch {
+            // Se ignora si la API no responde.
+        }
         setBooks((current) => current.filter((book) => book.id !== id));
         setFavorites((current) => current.filter((favoriteId) => favoriteId !== id));
     }
 
-    function editBook(id) {
+    async function editBook(id) {
         const book = books.find((item) => item.id === id);
         if (!book) return;
         const title = window.prompt("Nuevo titulo del libro:", book.titulo);
         if (!title) return;
-        setBooks((current) => current.map((item) => (item.id === id ? { ...item, titulo: title } : item)));
+
+        const libroActualizado = { ...book, titulo: title };
+
+        try {
+            await fetch(`http://localhost:3000/books/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(libroActualizado),
+            });
+        } catch {
+            // Se ignora si la API no responde.
+        }
+
+        setBooks((current) => current.map((item) => (item.id === id ? libroActualizado : item)));
     }
 
     function toggleFavorite(id) {
@@ -1461,6 +1636,7 @@ function logout() {
                 menuAbierto={menuAbierto}
                 setMenuAbierto={setMenuAbierto}
                 isLoggedIn={isAuthenticated}
+                onLogout={logout}
                 searchTerm={searchTerm}
                 onSearchTermChange={setSearchTerm}
                 onSearchSubmit={handleSearchSubmit}
