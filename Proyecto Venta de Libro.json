@@ -1,0 +1,2296 @@
+{
+  "info": {
+    "_postman_id": "5fd9c304-14f9-4595-ac9c-47a1ba47be05",
+    "name": "Proyecto Venta de Libro",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "57714922",
+    "_collection_link": "https://go.postman.co/collection/57714922-5fd9c304-14f9-4595-ac9c-47a1ba47be05?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "proyecto api",
+      "item": [
+        {
+          "name": "ConsultarRol",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "  {\r\n        \"id_rol\": 5,\r\n        \"nombre\": \"Usuario\",\r\n        \"descripcion\": \"Comprador 2\"\r\n    }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/roles/5",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "roles",
+                "5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ConsultarCodigo",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n        \"id_rol\": 1,\r\n        \"nombre\": \"Administrador\",\r\n        \"descripcion\": \"Control total\"\r\n    }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/roles/1",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "roles",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CrearRoles",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n        \"id_rol\": 6,\r\n        \"nombre\": \"Usuario\",\r\n        \"descripcion\": \"Comprador 2\"\r\n    }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/roles",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "roles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ModificarRoles",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n        \"id_rol\": 6,\r\n        \"nombre\": \"Users\",\r\n        \"descripcion\": \"Comprador 5\"\r\n    }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/roles/6",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "roles",
+                "6"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ElimiarRol",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"id_rol\": 5,\r\n        \"nombre\": \"Usuario\",\r\n        \"descripcion\": \"Comprador 2\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/roles/5",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "roles",
+            "5"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultaUsuario",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/usuarios",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "usuarios"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultarCodigo",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"id_usuario\": 1,\r\n        \"username\": \"admin1\",\r\n        \"password\": \"8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92\",\r\n        \"correo\": \"admin@gmail.com\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/usuarios/1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "usuarios",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CrearUsuario",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id_usuario\": 17,\r\n    \"username\": \"user17\",\r\n    \"password\": \"Septiembre2.\",\r\n    \"correo\": \"user17@gmail.com\"\r\n  }\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/usuarios",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "usuarios"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ModificarRoles",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id_usuario\": 20,\r\n    \"username\": \"user17\",\r\n    \"password\": \"Septiembre2.\",\r\n    \"correo\": \"septiembre@gmail.com\"\r\n  }\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/usuarios/21",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "usuarios",
+            "21"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "EliminarUsuario",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id_usuario\": 18,\r\n    \"username\": \"user17\",\r\n    \"password\": \"Septiembre2.\",\r\n    \"correo\": \"user17@gmail.com\"\r\n  }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/usuarios/18",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "usuarios",
+            "18"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultarAutores",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/autores",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "autores"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultarCodigo",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": " {\r\n        \"id_autor\": 1,\r\n        \"nombre\": \"Gabriel Garcia Marquez\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/autores/1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "autores",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CrearAutores",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": " {\r\n    \"id_autor\": 17,\r\n    \"nombre\": \"Jonh Torres\"\r\n  }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/autores",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "autores"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ModificarAutores",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": " {\r\n    \"id_autor\": 19,\r\n    \"nombre\": \"Camilo Martinez\"\r\n  }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/autores/19",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "autores",
+            "19"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "EliminarAutores",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id_autor\": 19,\r\n    \"nombre\": \"Camilo Martinez\"\r\n  }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/autores/19",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "autores",
+            "19"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultarCategorias",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/categorias",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "categorias"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultarCodigo",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"id_categoria\": 1,\r\n        \"nombre\": \"Novela\",\r\n        \"descripcion\": \"Libros narrativos\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/categorias/1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "categorias",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CrearCategoria",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"id_categoria\": 17,\r\n        \"nombre\": \"Caricaturas\",\r\n        \"descripcion\": \"Libros Infantil\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/categorias",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "categorias"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ModificarCateoria",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"id_categoria\": 18,\r\n        \"nombre\": \"Caricaturas\",\r\n        \"descripcion\": \"Libro feliz\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/categorias/18",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "categorias",
+            "18"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "EliminarCategoria",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"id_categoria\": 18,\r\n        \"nombre\": \"Caricaturas\",\r\n        \"descripcion\": \"Libro feliz\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/categorias/18",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "categorias",
+            "18"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultaDetalle-Venta",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/detalles-venta",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "detalles-venta"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultarCodigo",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "  {\r\n        \"id_detalle\": 1,\r\n        \"id_venta\": 1,\r\n        \"id_libro\": 1,\r\n        \"cantidad\": 1,\r\n        \"precio_unitario\": \"50000.00\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/detalles-venta/1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "detalles-venta",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CrearDetalle-Venta",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "  {\r\n        \"id_detalle\": 17,\r\n        \"id_venta\": null,\r\n        \"id_libro\": 18,\r\n        \"cantidad\": 1,\r\n        \"precio_unitario\": \"50000.00\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/detalles-venta",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "detalles-venta"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ModificarDetalle-venta",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "  {\r\n        \"id_detalle\": 1,\r\n        \"id_venta\": 1,\r\n        \"id_libro\": 1,\r\n        \"cantidad\": 1,\r\n        \"precio_unitario\": \"40000.00\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/detalles-venta/17",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "detalles-venta",
+            "17"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "EliminarDetalle-venta",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": " {\r\n        \"id_detalle\": 17,\r\n        \"id_venta\": 17,\r\n        \"id_libro\": null,\r\n        \"cantidad\": 1,\r\n        \"precio_unitario\": \"10000.00\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/detalles-venta/17",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "detalles-venta",
+            "17"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultaEditoriales",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/editoriales",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "editoriales"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultarCodigo",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "  {\r\n        \"id_editorial\": 1,\r\n        \"nombre\": \"Planeta\",\r\n        \"pais\": \"España\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/editoriales/1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "editoriales",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CrearEditoriales",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "  {\r\n        \"id_editorial\": 17,\r\n        \"nombre\": \"Planta\",\r\n        \"pais\": \"Canada\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/editoriales",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "editoriales"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ModificarEditoriales",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "  {\r\n        \"id_editorial\": 18,\r\n        \"nombre\": \"Planta\",\r\n        \"pais\": \"Portugal\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/editoriales/18",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "editoriales",
+            "18"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "EliminarEditoriales",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "  {\r\n        \"id_editorial\": 18,\r\n        \"nombre\": \"Planta\",\r\n        \"pais\": \"Portugal\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/editoriales/18",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "editoriales",
+            "18"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultaEmpleados",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/empleados",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "empleados"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultaCodigo",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id_empleado\": 1,\r\n        \"nombre\": \"Carlos\",\r\n        \"apellido\": \"Gomez\",\r\n        \"telefono\": \"3201111111\",\r\n        \"cargo\": \"Administrador\",\r\n        \"id_usuario\": 1\r\n    }\r\n        ",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/empleados/1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "empleados",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CrearEmpleados",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id_empleado\": 17,\r\n        \"nombre\": \"Mauricio\",\r\n        \"apellido\": \"Bejarano\",\r\n        \"telefono\": \"3123264885\",\r\n        \"cargo\": \"Vendedor\",\r\n        \"id_usuario\": null\r\n    }\r\n        ",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/empleados",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "empleados"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ModificarEmpleados",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id_empleado\": 18,\r\n        \"nombre\": \"Mauricio\",\r\n        \"apellido\": \"Bejarano\",\r\n        \"telefono\": \"3123264885\",\r\n        \"cargo\": \"Supervisor\",\r\n        \"id_usuario\": null\r\n    }\r\n        ",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/empleados/18",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "empleados",
+            "18"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "EliminarEmpleados",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id_empleado\": 18,\r\n        \"nombre\": \"Mauricio\",\r\n        \"apellido\": \"Bejarano\",\r\n        \"telefono\": \"3123264885\",\r\n        \"cargo\": \"Supervisor\",\r\n        \"id_usuario\": null\r\n    }\r\n        ",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/empleados/18",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "empleados",
+            "18"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "consultaLibros",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/libros",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "libros"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "consultarCodigo",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "\r\n        \"id_libro\": 1,\r\n        \"titulo\": \"Cien años de soledad\",\r\n        \"precio\": \"50000.00\",\r\n        \"stock\": 10,\r\n        \"id_categoria\": 1,\r\n        \"id_editorial\": 1",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/libros/1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "libros",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CrearLibros",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n          \"id_libro\": 19,\r\n        \"titulo\": \"años de soledad\",\r\n        \"precio\": \"40000.00\",\r\n        \"stock\": 10,\r\n        \"id_categoria\": null,\r\n        \"id_editorial\": null  \r\n        }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/libros",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "libros"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ModificarLibros",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n          \"id_libro\": 20,\r\n        \"titulo\": \"años de soledad\",\r\n        \"precio\": \"40000.00\",\r\n        \"stock\": 10,\r\n        \"id_categoria\": null,\r\n        \"id_editorial\": null  \r\n        }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/libros/20",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "libros",
+            "20"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "EliminarLIbros",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n          \"id_libro\": 20,\r\n        \"titulo\": \"años de soledad\",\r\n        \"precio\": \"40000.00\",\r\n        \"stock\": 10,\r\n        \"id_categoria\": null,\r\n        \"id_editorial\": null  \r\n        }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/libros/20",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "libros",
+            "20"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultaLibros-Autores",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/libro-autores",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "libro-autores"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultarCodigo",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": " {\r\n        \"id_libro\": 1,\r\n        \"id_autor\": 1\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/libro-autores/1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "libro-autores",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CrearLibros-Autores",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"id_libro\": 18,\r\n        \"id_autor\": 18\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/libro-autores",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "libro-autores"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ModificarLibros-Autores",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"id_libro\": 18,\r\n        \"id_autor\": 18\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/libro-autores/18",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "libro-autores",
+            "18"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "EliminarLibros-Autores",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"id_libro\": 18,\r\n        \"id_autor\": 18\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/libro-autores/18",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "libro-autores",
+            "18"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultaMetodo-Pago",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/metodos-pago",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "metodos-pago"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultarCodigo",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": " {\r\n        \"id_metodo_pago\": 1,\r\n        \"nombre\": \"Efectivo\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/metodos-pago/1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "metodos-pago",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CrearMetodo-Pago",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": " {\r\n        \"id_metodo_pago\": 18,\r\n        \"nombre\": \"Efectivo\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/metodos-pago",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "metodos-pago"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ModificarMetodo-Pago",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": " {\r\n        \"id_metodo_pago\": 19,\r\n        \"nombre\": \"Nequi\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/metodos-pago/19",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "metodos-pago",
+            "19"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "EliminarMetodo-Pago",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": " {\r\n        \"id_metodo_pago\": 19,\r\n        \"nombre\": \"Efectivo\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/metodos-pago/19",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "metodos-pago",
+            "19"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultaPago",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/pagos",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "pagos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultarCodigo",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"id_pago\": 1,\r\n        \"id_venta\": 1,\r\n        \"id_metodo_pago\": 1,\r\n        \"monto\": \"60000.00\",\r\n        \"fecha_pago\": \"2026-08-31 14:41:19\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/pagos/1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "pagos",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CrearPago",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"id_pago\": 17,\r\n        \"id_venta\": 1,\r\n        \"id_metodo_pago\": 1,\r\n        \"monto\": \"60000.00\",\r\n        \"fecha_pago\": \"2026-08-31 14:41:19\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/pagos",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "pagos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ModificarPago",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"id_pago\": 19,\r\n        \"id_venta\": 1,\r\n        \"id_metodo_pago\": 1,\r\n        \"monto\": \"40000.00\",\r\n        \"fecha_pago\": \"2026-08-31 14:41:19\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/pagos/19",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "pagos",
+            "19"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "EliminarPago",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"id_pago\": 19,\r\n        \"id_venta\": 1,\r\n        \"id_metodo_pago\": 1,\r\n        \"monto\": \"40000.00\",\r\n        \"fecha_pago\": \"2026-08-31 14:41:19\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/pagos/19",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "pagos",
+            "19"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultaRol-usuario",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/rol-usuarios",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "rol-usuarios"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsularCodigo",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"id_rol\": 1,\r\n        \"id_usuario\": 1\r\n    }\r\n    ",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/rol-usuarios/1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "rol-usuarios",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CrearRol-usuario",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"id_rol\": 7,\r\n        \"id_usuario\": 7\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/rol-usuarios",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "rol-usuarios"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ModificarRol-usuario",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"id_rol\": 7 ,\r\n        \"id_usuario\": 18\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/rol-usuarios/7",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "rol-usuarios",
+            "7"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "EliminarRol-usuario",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"id_rol\": 7 ,\r\n        \"id_usuario\": 7\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/rol-usuarios/7",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "rol-usuarios",
+            "7"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultaCliente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/clientes",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "clientes"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultarCodigo",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": " {\r\n       \"id_cliente\": 1,\r\n        \"nombre\": \"Juan Perez\",\r\n        \"telefono\": \"3001234567\",\r\n        \"direccion\": \"Bogotá\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/clientes/1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "clientes",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CrearCliente",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": " {\r\n        \"id_cliente\": 2,\r\n        \"nombre\": \"Edwin Bautista\",\r\n        \"telefono\": \"3224194787\",\r\n        \"direccion\": \"Bogota\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/clientes",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "clientes"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ModificarCliente",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": " {\r\n        \"id_cliente\": 2,\r\n        \"nombre\": \"Edwin Bautista\",\r\n        \"telefono\": \"3224194787\",\r\n        \"direccion\": \"Cucuta\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/clientes/17",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "clientes",
+            "17"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "EliminarCliente",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": " {\r\n        \"id_cliente\": 2,\r\n        \"nombre\": \"Edwin Bautista\",\r\n        \"telefono\": \"3224194787\",\r\n        \"direccion\": \"Cucuta\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/clientes/17",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "clientes",
+            "17"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultaVenta",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/ventas",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "ventas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ConsultarCodigo",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/ventas/1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "ventas",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ModificarVenta",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id_venta\": 17,\r\n    \"id_cliente\": 18,\r\n    \"id_empleado\": 20,\r\n    \"fecha\": \"2026-08-31 14:41:19\",\r\n    \"total\": \"50000.00\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/ventas",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "ventas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ModificarVenta",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id_venta\": 17,\r\n    \"id_cliente\": 18,\r\n    \"id_empleado\": 20,\r\n    \"fecha\": \"2026-08-31 15:20:00\",\r\n    \"total\": \"40000.00\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/ventas/18",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "ventas",
+            "18"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "EliminarVenta",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id_venta\": 17,\r\n    \"id_cliente\": 18,\r\n    \"id_empleado\": 20,\r\n    \"fecha\": \"2026-08-31 15:20:00\",\r\n    \"total\": \"40000.00\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/ventas/17",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "ventas",
+            "17"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
