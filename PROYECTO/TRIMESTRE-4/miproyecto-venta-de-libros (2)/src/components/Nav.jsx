@@ -17,19 +17,6 @@ function HeartIcon() {
     );
 }
 
-function TruckIcon() {
-    return (
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M3 6h11v10H3z" />
-            <path d="M14 10h4l3 3v3h-7z" />
-            <path d="M2 10h5" />
-            <path d="M1 13h6" />
-            <circle cx="7" cy="18" r="2" />
-            <circle cx="18" cy="18" r="2" />
-        </svg>
-    );
-}
-
 function CartIcon() {
     return (
         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -59,12 +46,22 @@ function MenuIcon() {
     );
 }
 
-function Nav({ menuAbierto, setMenuAbierto, isLoggedIn, onLogout, searchTerm, onSearchTermChange, onSearchSubmit, onSearchClear, onHomeClick }) {
+function Nav({
+    menuAbierto = false,
+    setMenuAbierto = () => {},
+    isLoggedIn = false,
+    searchTerm = "",
+    onSearchTermChange = () => {},
+    onSearchSubmit = (event) => event.preventDefault(),
+    onSearchClear = () => {},
+    onHomeClick = () => {},
+    onLogout = () => {},
+}) {
     return (
         <nav className="store-nav" aria-label="Navegacion principal">
             <div className="nav-topbar">
                 <NavLink to="/contactos">Contactos</NavLink>
-                <NavLink to="/productos">Catalogo</NavLink>
+                <NavLink to="/catalogo">Catalogo</NavLink>
                 <NavLink to="/materiales">Servicios</NavLink>
                 <NavLink to="/terminos">Terminos y condiciones</NavLink>
             </div>
@@ -115,21 +112,15 @@ function Nav({ menuAbierto, setMenuAbierto, isLoggedIn, onLogout, searchTerm, on
                 </form>
 
                 <div className="nav-actions">
-                    {isLoggedIn ? (
-                        <>
-                            <Link to="/perfil" title="Mi perfil"><UserIcon /></Link>
-                            <button type="button" className="logout-button" onClick={onLogout}>
-                                Cerrar sesión
-                            </button>
-                        </>
-                    ) : (
-                        <NavLink className="login-link" to="/login">
+                    {!isLoggedIn && (
+                        <NavLink className={({ isActive }) => `auth-link${isActive ? " active" : ""}`} to="/login">
                             Iniciar sesión
                         </NavLink>
                     )}
-                    <Link to="/favoritos"><HeartIcon /></Link>
-                    <Link to="/pedidos"><TruckIcon /></Link>
-                    <Link to="/carrito"><CartIcon /></Link>
+                    {isLoggedIn && <Link className="nav-action-link" to="/perfil"><UserIcon /><span>Perfil</span></Link>}
+                    {isLoggedIn && <button className="nav-logout" type="button" onClick={onLogout}>Cerrar sesión</button>}
+                    <Link className="nav-action-link" to="/favoritos"><HeartIcon /><span>Favoritos</span></Link>
+                    <Link className="nav-action-link" to="/carrito"><CartIcon /><span>Carrito</span></Link>
                 </div>
 
             </div>

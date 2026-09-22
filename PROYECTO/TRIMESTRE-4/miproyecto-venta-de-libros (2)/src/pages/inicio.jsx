@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Foooter";
 import Nav from "../components/Nav";
-import { clientes as clientesBase, empleados as empleadosBase, libros as librosBase, ventas } from "../data/libros";
+import { clientes as clientesBase, empleados as empleadosBase, libros as librosBase, ventas } from "../data/libros.js.example";
 
 const cuentasBase = [
     {
@@ -17,39 +17,41 @@ const cuentasBase = [
     {
         role: "Administrador",
         name: "Admin Libreria",
-        username: "admin.libreria",
-        email: "admin@libreria.com",
-        password: "123456",
+        username: "admin",
+        email: "admin@gmail.com",
+        password: "123",
         phone: "3000000001",
         city: "Bogota",
     },
 ];
 
 function formatPrice(price) {
-    return `$${Number(price).toFixed(Number(price) % 1 === 0 ? 0 : 2)}`;
+    const numericPrice = Number(price);
+    const fractionDigits = Number.isInteger(numericPrice) ? 0 : 2;
+    return `$${numericPrice.toLocaleString("es-CO", {
+        minimumFractionDigits: fractionDigits,
+        maximumFractionDigits: 2,
+    })}`;
 }
 
 function normalizeValue(value) {
     return String(value || "").trim().toLowerCase();
 }
 
-function loadStorage(key, fallback) {
-    if (typeof window === "undefined") return fallback;
-    try {
-        const saved = window.localStorage.getItem(key);
-        return saved ? JSON.parse(saved) : fallback;
-    } catch {
-        return fallback;
+function normalizeRole(role) {
+    const value = String(role || "").trim().toLowerCase();
+    if (["administrador", "admin", "1"].includes(value)) {
+        return "Administrador";
     }
+    return value ? value.charAt(0).toUpperCase() + value.slice(1) : "Usuario";
 }
 
-function saveStorage(key, value) {
-    if (typeof window === "undefined") return;
-    try {
-        window.localStorage.setItem(key, JSON.stringify(value));
-    } catch {
-        // ignore storage errors
+function getBookDescription(book) {
+    if (book.descripcion || book.description) {
+        return book.descripcion || book.description;
     }
+
+    return `Una lectura de ${String(book.categoria || "literatura").toLowerCase()} publicada por ${book.editorial || "nuestra libreria"}. Conoce la historia, las ideas y los personajes de ${book.titulo}.`;
 }
 
 function BookIcon() {
@@ -63,144 +65,329 @@ function BookIcon() {
     );
 }
 
-function Inicio({ initialScreen = "home", initialAuthMode = "login" }) {
-    const startsLoggedIn = !["home", "login"].includes(initialScreen);
+import portadas from '../assets/portadas';
 
+const coverPhotos = [
+    portadas[1],
+    portadas[2],
+    portadas[3],
+    portadas[4],
+    portadas[5],
+    portadas[6],
+    portadas[7],
+    portadas[8],
+    portadas[9],
+    portadas[10],
+    portadas[11],
+    portadas[12],
+    portadas[13],
+    portadas[14],
+    portadas[15],
+    portadas[16],
+    portadas[17],
+    portadas[18],
+    portadas[19],
+    portadas[20],
+    portadas[21],
+    portadas[22],
+    portadas[23],
+    portadas[24],
+    portadas[25],
+    portadas[26],
+    portadas[27],
+    portadas[28],
+    portadas[29],
+    portadas[30],
+];
+
+const coverThemes = {
+    "Novelas": ["#9b3e50", "#251444", "✦"],
+    "Tecnología": ["#006d91", "#141a4d", "</>"],
+    "Negocios y Finanzas": ["#9b6700", "#3d163b", "$"],
+    "Educación": ["#0b7a72", "#17375d", "✎"],
+    "Infantil": ["#b2417e", "#37348c", "☀"],
+    "Ciencia Ficción": ["#3a48ad", "#130d3b", "◌"],
+    "Romance": ["#bf3c6b", "#55214b", "♥"],
+    "Misterio": ["#4b466c", "#111426", "?"],
+    "Historia": ["#915b28", "#3a2434", "⌛"],
+    "Diseño": ["#7750b7", "#113c5d", "◒"],
+    "Idiomas": ["#2477a7", "#1d2854", "A"],
+    "Desarrollo Personal": ["#287c66", "#24446c", "↑"],
+};
+
+function BookCover({ book, className = "" }) {
+    const [from, to, symbol] = coverThemes[book.categoria] || ["#006d91", "#24154c", "✦"];
+    const photo = book.portada || (!book.apiOnly ? coverPhotos[(Number(book.id) - 1) % coverPhotos.length] : null);
+    return (
+        <div className={`book-cover-art ${className}`.trim()} style={{ "--cover-from": from, "--cover-to": to }} role="img" aria-label={`Portada de ${book.titulo}`}>
+            <img className="cover-photo" src={photo} alt="" aria-hidden="true" loading="lazy" onError={(event) => event.currentTarget.classList.add("is-unavailable")} />
+            <div className="book-cover-illustration">
+                <span className="cover-symbol" aria-hidden="true">{symbol}</span>
+                <span className="cover-category">{book.categoria}</span>
+                <small>{book.editorial}</small>
+            </div>
+        </div>
+    );
+}
+
+function getOrderNumber() {
+    const now = new Date();
+    return `LB-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${Math.floor(1000 + Math.random() * 9000)}`;
+}
+
+function getRandomPin() {
+    return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+function getAuthToken() {
+    return `${Math.random().toString(36).slice(2)}.${Math.random().toString(36).slice(2)}`;
+}
+
+const STORAGE_PREFIX = "bookstore-";
+const ADMIN_APP_URL = "http://localhost:3000";
+const API_BASE = "http://localhost:5000/api";
+
+function getStorageKey(key) {
+    return `${STORAGE_PREFIX}${key}`;
+}
+
+function loadFromStorage(key, fallback) {
+    if (typeof window === "undefined") return fallback;
+    try {
+        const stored = window.localStorage.getItem(getStorageKey(key));
+        return stored ? JSON.parse(stored) : fallback;
+    } catch {
+        return fallback;
+    }
+}
+
+function loadArrayFromStorage(key, fallback) {
+    const stored = loadFromStorage(key, null);
+    return Array.isArray(stored) && stored.length ? stored : fallback;
+}
+
+function saveToStorage(key, value) {
+    if (typeof window === "undefined") return;
+    try {
+        const storageKey = getStorageKey(key);
+        if (value === null || value === undefined) {
+            window.localStorage.removeItem(storageKey);
+            return;
+        }
+        window.localStorage.setItem(storageKey, JSON.stringify(value));
+    } catch {
+        // ignore storage errors
+    }
+}
+
+function normalizeTitle(title) {
+    return String(title || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim()
+        .toLowerCase();
+}
+
+function normalizeApiBook(book) {
+    const apiTitle = normalizeTitle(book.titulo);
+    const localBook = librosBase.find((item) => normalizeTitle(item.titulo) === apiTitle);
+    return {
+        ...localBook,
+        ...book,
+        id: Number(book.id_libro ?? book.id),
+        apiOnly: !localBook,
+        titulo: book.titulo || localBook?.titulo || "Libro sin titulo",
+        precio: Number(book.precio ?? localBook?.precio ?? 0),
+        stock: Number(book.stock ?? localBook?.stock ?? 0),
+        categoria: book.categoria || localBook?.categoria || "Sin categoria",
+        editorial: book.editorial || localBook?.editorial || "Sin editorial",
+        descripcion: book.descripcion || book.description || localBook?.descripcion || localBook?.description || "",
+    };
+}
+
+function mergeApiBooks(data) {
+    const apiBooks = (Array.isArray(data) ? data : data.libro || []).map(normalizeApiBook);
+    const apiBooksByTitle = new Map(apiBooks.map((book) => [normalizeTitle(book.titulo), book]));
+    const localBooks = librosBase.map((book) => apiBooksByTitle.get(normalizeTitle(book.titulo)) || book);
+    const localTitles = new Set(localBooks.map((book) => normalizeTitle(book.titulo)));
+    const mergedBooks = [...localBooks, ...apiBooks.filter((book) => !localTitles.has(normalizeTitle(book.titulo)))];
+    const usedIds = new Set();
+    let nextId = mergedBooks.reduce((highest, book) => {
+        const id = Number(book.id);
+        return Number.isInteger(id) ? Math.max(highest, id) : highest;
+    }, 0) + 1;
+
+    return mergedBooks.map((book) => {
+        const id = Number(book.id);
+        if (Number.isInteger(id) && !usedIds.has(id)) {
+            usedIds.add(id);
+            return { ...book, id };
+        }
+
+        while (usedIds.has(nextId)) nextId += 1;
+        usedIds.add(nextId);
+        return { ...book, id: nextId++ };
+    });
+}
+
+function Inicio({ initialScreen = "home", initialAuthMode = "login" }) {
     const [authMode, setAuthMode] = useState(initialAuthMode);
     const [screen, setScreen] = useState(initialScreen);
     const [menuAbierto, setMenuAbierto] = useState(false);
 
     const [feedback, setFeedback] = useState("");
-    const [session, setSession] = useState(() => {
-        if (typeof window === "undefined") {
-            return startsLoggedIn ? cuentasBase[0] : null;
-        }
+    const [session, setSession] = useState(() => loadFromStorage("session", null));
+    const [accounts, setAccounts] = useState(() => loadArrayFromStorage("accounts", cuentasBase));
+    const [books, setBooks] = useState(() => mergeApiBooks(loadFromStorage("books", librosBase)));
+    const [cartItems, setCartItems] = useState(() => loadFromStorage("cart", []));
+    const [selectedCategory, setSelectedCategory] = useState(() => loadFromStorage("selectedCategory", "Todos"));
+    const [favorites, setFavorites] = useState(() => loadFromStorage("favorites", [1, 3]));
+    const [clientes, setClientes] = useState(() => loadArrayFromStorage("clientes", clientesBase));
+    const [empleados, setEmpleados] = useState(() => loadArrayFromStorage("empleados", empleadosBase));
+    const [chatMessages, setChatMessages] = useState(() => loadFromStorage("chatMessages", []));
+    const [selectedWhatsAppNumber, setSelectedWhatsAppNumber] = useState("573001234567");
+    const [downloadAccess, setDownloadAccess] = useState(() => loadFromStorage("downloadAccess", []));
+    const [pendingDownload, setPendingDownload] = useState(() => loadFromStorage("pendingDownload", null));
 
-        try {
-            const saved = window.localStorage.getItem("bookstore-session");
-            if (saved) return JSON.parse(saved);
-        } catch {
-            // ignore invalid storage value
-        }
-
-        return startsLoggedIn ? cuentasBase[0] : null;
-    });
-    const [accounts, setAccounts] = useState(() => loadStorage("bookstore-accounts", cuentasBase));
-    const [books, setBooks] = useState(() => loadStorage("bookstore-books", librosBase));
-    const [cartItems, setCartItems] = useState(() => {
-        if (typeof window === "undefined") return [];
-        try {
-            const saved = window.localStorage.getItem("bookstore-cart");
-            return saved ? JSON.parse(saved) : [];
-        } catch {
-            return [];
-        }
-    });
-
-    const [selectedCategory, setSelectedCategory] = useState(() => loadStorage("bookstore-selectedCategory", "Todos"));
-    const [favorites, setFavorites] = useState(() => loadStorage("bookstore-favorites", [1, 3]));
-    const [clientes, setClientes] = useState(() => loadStorage("bookstore-clientes", clientesBase));
-    const [empleados, setEmpleados] = useState(() => loadStorage("bookstore-empleados", empleadosBase));
-    const [chatMessages, setChatMessages] = useState(() => loadStorage("bookstore-chatMessages", []));
-    const [downloadAccess, setDownloadAccess] = useState(() => loadStorage("bookstore-downloadAccess", []));
-    const [pendingDownload, setPendingDownload] = useState(() => loadStorage("bookstore-pendingDownload", null));
-    const [pendingDownloadEmail, setPendingDownloadEmail] = useState(() => loadStorage("bookstore-pendingDownloadEmail", ""));
-    const [verificationBook, setVerificationBook] = useState(() => loadStorage("bookstore-verificationBook", null));
-    const [searchTerm, setSearchTerm] = useState(() => loadStorage("bookstore-searchTerm", ""));
-    const [searchQuery, setSearchQuery] = useState(() => loadStorage("bookstore-searchQuery", ""));
-    const [searchRestoreCategory, setSearchRestoreCategory] = useState(() => loadStorage("bookstore-searchRestoreCategory", "Todos"));
-    const [selectedBank, setSelectedBank] = useState(() => loadStorage("bookstore-selectedBank", ""));
-    const [paymentCompleted, setPaymentCompleted] = useState(() => loadStorage("bookstore-paymentCompleted", false));
-    const [paymentMethod, setPaymentMethod] = useState(() => loadStorage("bookstore-paymentMethod", ""));
-    const [paymentDetailUsed, setPaymentDetailUsed] = useState(() => loadStorage("bookstore-paymentDetailUsed", ""));
-    const [lastPurchase, setLastPurchase] = useState(() => loadStorage("bookstore-lastPurchase", null));
-    const [selectedBook, setSelectedBook] = useState(() => loadStorage("bookstore-selectedBook", null));
-    const [termsAccepted, setTermsAccepted] = useState(() => loadStorage("bookstore-termsAccepted", false));
-    const [postAuthScreen, setPostAuthScreen] = useState(() => loadStorage("bookstore-postAuthScreen", null));
-
-    useEffect(() => saveStorage("bookstore-session", session), [session]);
-    useEffect(() => saveStorage("bookstore-accounts", accounts), [accounts]);
-    useEffect(() => saveStorage("bookstore-books", books), [books]);
-    useEffect(() => saveStorage("bookstore-cart", cartItems), [cartItems]);
-    useEffect(() => saveStorage("bookstore-selectedCategory", selectedCategory), [selectedCategory]);
-    useEffect(() => saveStorage("bookstore-favorites", favorites), [favorites]);
-    useEffect(() => saveStorage("bookstore-clientes", clientes), [clientes]);
-    useEffect(() => saveStorage("bookstore-empleados", empleados), [empleados]);
-    useEffect(() => saveStorage("bookstore-chatMessages", chatMessages), [chatMessages]);
-    useEffect(() => saveStorage("bookstore-downloadAccess", downloadAccess), [downloadAccess]);
-    useEffect(() => saveStorage("bookstore-pendingDownload", pendingDownload), [pendingDownload]);
-    useEffect(() => saveStorage("bookstore-pendingDownloadEmail", pendingDownloadEmail), [pendingDownloadEmail]);
-    useEffect(() => saveStorage("bookstore-verificationBook", verificationBook), [verificationBook]);
-    useEffect(() => saveStorage("bookstore-searchTerm", searchTerm), [searchTerm]);
-    useEffect(() => saveStorage("bookstore-searchQuery", searchQuery), [searchQuery]);
-    useEffect(() => saveStorage("bookstore-searchRestoreCategory", searchRestoreCategory), [searchRestoreCategory]);
-    useEffect(() => saveStorage("bookstore-selectedBank", selectedBank), [selectedBank]);
-    useEffect(() => saveStorage("bookstore-paymentCompleted", paymentCompleted), [paymentCompleted]);
-    useEffect(() => saveStorage("bookstore-paymentMethod", paymentMethod), [paymentMethod]);
-    useEffect(() => saveStorage("bookstore-paymentDetailUsed", paymentDetailUsed), [paymentDetailUsed]);
-    useEffect(() => saveStorage("bookstore-lastPurchase", lastPurchase), [lastPurchase]);
-    useEffect(() => saveStorage("bookstore-selectedBook", selectedBook), [selectedBook]);
-    useEffect(() => saveStorage("bookstore-termsAccepted", termsAccepted), [termsAccepted]);
-    useEffect(() => saveStorage("bookstore-postAuthScreen", postAuthScreen), [postAuthScreen]);
-
+    const whatsappNumbers = [
+        { id: "soporte", label: "Soporte", number: "573125712998" },
+        { id: "ventas", label: "Ventas", number: "573123264885" },
+    ];
+    
     useEffect(() => {
-        async function cargarDatosIniciales() {
-            try {
-                const [respuestaUsuarios, respuestaLibros, respuestaClientes, respuestaEmpleados] = await Promise.all([
-                    fetch("/api/user"),
-                    fetch("/api/books"),
-                    fetch("/api/clients"),
-                    fetch("/api/employees"),
-                ]);
+        async function loadApiData() {
+            const endpoints = [
+                {
+                    url: `${API_BASE}/libro?limit=100`,
+                    setter: setBooks,
+                    fallback: librosBase,
+                    transform: mergeApiBooks,
+                },
+                { url: `${API_BASE}/cliente`, setter: setClientes, fallback: clientesBase },
+                { url: `${API_BASE}/empleado`, setter: setEmpleados, fallback: empleadosBase },
+                { url: `${API_BASE}/usuario`, setter: setAccounts, fallback: cuentasBase },
+            ];
 
-                if (respuestaUsuarios.ok) {
-                    const usuariosApi = await respuestaUsuarios.json();
-                    const cuentasApi = Array.isArray(usuariosApi)
-                        ? usuariosApi.map((usuario) => ({
-                            id: usuario.id,
-                            role: usuario.rol === 1 ? "Administrador" : "Usuario",
-                            name: usuario.name || usuario.nombre || usuario.email?.split("@")[0] || "Usuario",
-                            username: usuario.username || usuario.email?.split("@")[0] || `usuario${usuario.id}`,
-                            email: usuario.email,
-                            password: usuario.password,
-                            phone: usuario.phone || "",
-                            city: usuario.city || "",
-                        }))
-                        : [];
-                    if (cuentasApi.length) {
-                        setAccounts(cuentasApi);
-                    }
-                }
+            const results = await Promise.all(
+                endpoints.map(async ({ url, transform }) => {
+                    try {
+                        const response = await fetch(url, {
+                            cache: 'no-store',
+                        });
 
-                if (respuestaLibros.ok) {
-                    const librosApi = await respuestaLibros.json();
-                    if (Array.isArray(librosApi) && librosApi.length) {
-                        setBooks(librosApi.map((libro) => ({ ...libro, precio: Number(libro.precio), stock: Number(libro.stock) })));
-                    }
-                }
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status} ${response.statusText}`);
+                        }
 
-                if (respuestaClientes.ok) {
-                    const clientesApi = await respuestaClientes.json();
-                    if (Array.isArray(clientesApi) && clientesApi.length) {
-                        setClientes(clientesApi);
-                    }
-                }
+                        const contentType = response.headers.get("content-type") || "";
 
-                if (respuestaEmpleados.ok) {
-                    const empleadosApi = await respuestaEmpleados.json();
-                    if (Array.isArray(empleadosApi) && empleadosApi.length) {
-                        setEmpleados(empleadosApi);
+                        if (!contentType.includes("application/json")) {
+                            const text = await response.text();
+                            throw new Error(
+                                `Expected JSON but received ${contentType || "unknown"}: ${text.slice(0, 120)}`
+                            );
+                        }
+
+                        const data = await response.json();
+                        return {
+                            success: true,
+                            data: transform ? transform(data) : data,
+                        };
+                    } catch (error) {
+                        // La API puede no estar iniciada en el puerto esperado.
+                        // En ese caso usamos los datos locales del proyecto.
+                        return {
+                            success: false,
+                            error,
+                        };
                     }
+                })
+            );
+
+            results.forEach((result, index) => {
+                const { setter, fallback } = endpoints[index];
+                if (result.success && Array.isArray(result.data) && result.data.length) {
+                    setter(result.data);
+                } else {
+                    setter(fallback);
                 }
-            } catch {
-                // Se mantiene el contenido local si la API no responde.
-            }
+            });
+
+            setFeedback('');
         }
 
-        cargarDatosIniciales();
+        loadApiData();
     }, []);
 
-    const now = useMemo(() => new Date().toLocaleString("es-CO"), []);
+    const [pendingDownloadEmail, setPendingDownloadEmail] = useState(() => loadFromStorage("pendingDownloadEmail", ""));
+    const [verificationBook, setVerificationBook] = useState(() => loadFromStorage("verificationBook", null));
+    const [searchTerm, setSearchTerm] = useState(() => loadFromStorage("searchTerm", ""));
+    const [searchQuery, setSearchQuery] = useState(() => loadFromStorage("searchQuery", ""));
+    const [searchRestoreCategory, setSearchRestoreCategory] = useState(() => loadFromStorage("searchRestoreCategory", "Todos"));
+    const [selectedBank, setSelectedBank] = useState(() => loadFromStorage("selectedBank", ""));
+    const [paymentCompleted, setPaymentCompleted] = useState(() => loadFromStorage("paymentCompleted", false));
+    const [lastPurchase, setLastPurchase] = useState(() => loadFromStorage("lastPurchase", null));
+    const [selectedBook, setSelectedBook] = useState(() => loadFromStorage("selectedBook", null));
+    const [termsAccepted, setTermsAccepted] = useState(() => loadFromStorage("termsAccepted", false));
+    const [postAuthScreen, setPostAuthScreen] = useState(() => loadFromStorage("postAuthScreen", null));
+
+    useEffect(() => {
+        saveToStorage("session", session);
+        saveToStorage("token", session?.token || null);
+        saveToStorage("accounts", accounts);
+        saveToStorage("books", books);
+        saveToStorage("cart", cartItems);
+        saveToStorage("selectedCategory", selectedCategory);
+        saveToStorage("favorites", favorites);
+        saveToStorage("clientes", clientes);
+        saveToStorage("empleados", empleados);
+        saveToStorage("chatMessages", chatMessages);
+        saveToStorage("downloadAccess", downloadAccess);
+        saveToStorage("pendingDownload", pendingDownload);
+        saveToStorage("pendingDownloadEmail", pendingDownloadEmail);
+        saveToStorage("verificationBook", verificationBook);
+        saveToStorage("searchTerm", searchTerm);
+        saveToStorage("searchQuery", searchQuery);
+        saveToStorage("searchRestoreCategory", searchRestoreCategory);
+        saveToStorage("selectedBank", selectedBank);
+        saveToStorage("paymentCompleted", paymentCompleted);
+        saveToStorage("lastPurchase", lastPurchase);
+        saveToStorage("selectedBook", selectedBook);
+        saveToStorage("termsAccepted", termsAccepted);
+        saveToStorage("paymentMethod", paymentCompleted ? (lastPurchase?.method || "") : "");
+        saveToStorage("paymentDetailUsed", paymentCompleted ? (lastPurchase?.detail || "") : "");
+        saveToStorage("postAuthScreen", postAuthScreen);
+    }, [
+        session,
+        accounts,
+        books,
+        cartItems,
+        selectedCategory,
+        favorites,
+        clientes,
+        empleados,
+        chatMessages,
+        downloadAccess,
+        pendingDownload,
+        pendingDownloadEmail,
+        verificationBook,
+        searchTerm,
+        searchQuery,
+        searchRestoreCategory,
+        selectedBank,
+        paymentCompleted,
+        lastPurchase,
+        selectedBook,
+        termsAccepted,
+        postAuthScreen,
+    ]);
+    const loginTime = useMemo(() => {
+        const date = new Date();
+        return {
+            date: new Intl.DateTimeFormat("es-CO", { day: "2-digit", month: "short", year: "numeric" }).format(date),
+            time: new Intl.DateTimeFormat("es-CO", { hour: "numeric", minute: "2-digit" }).format(date),
+        };
+    }, []);
     const isAuthenticated = Boolean(session);
     const sidebarCategories = [
         "Novelas",
@@ -305,12 +492,8 @@ function Inicio({ initialScreen = "home", initialAuthMode = "login" }) {
         setScreen(nextScreen);
     }
 
-    function resetCatalogView() {
-        setSearchTerm("");
-        setSearchQuery("");
-        setSelectedCategory(searchRestoreCategory || "Todos");
-        setSearchRestoreCategory("Todos");
-        setScreen("home");
+    function openAdminModule(module) {
+        window.location.assign(`${ADMIN_APP_URL}/modulos/${module}`);
     }
 
     function handleSearchSubmit(event) {
@@ -402,35 +585,15 @@ function Inicio({ initialScreen = "home", initialAuthMode = "login" }) {
         setScreen("payments");
     }
 
-    function completeDownloadPayment(email) {
-        if (!pendingDownload) return;
-        const recipient = String(email || pendingDownloadEmail || session?.email || "").trim();
-        if (!recipient) {
-            setFeedback("Ingresa un correo valido para recibir el PIN de descarga.");
-            return;
-        }
-
-        const pin = String(Math.floor(100000 + Math.random() * 900000));
-        setDownloadAccess((current) => [
-            ...current,
-            { bookId: pendingDownload.id, pin, purchasedAt: new Date().toISOString(), email: recipient },
-        ]);
-        setVerificationBook(pendingDownload);
-        setPendingDownload(null);
-        setPendingDownloadEmail("");
-        setFeedback(`Compra exitosa. Se envio un PIN a ${recipient}.`);
-        setScreen("download-verification");
-    }
-
-   function renderHomeScreen() {
+    function renderHomeScreen() {
     return (
         <main>
             <section className="home-books">
 
                 {menuAbierto && (
                     <aside className="menu-libros">
-                        <button className="menu-close-button" type="button" onClick={() => setMenuAbierto(false)}>
-                            ✕
+                        <button className="menu-close-button" type="button" aria-label="Cerrar menú" onClick={() => setMenuAbierto(false)}>
+                            <span aria-hidden="true">×</span>
                         </button>
                         <ul>
                             {sidebarCategories.map((category) => (
@@ -469,21 +632,21 @@ function Inicio({ initialScreen = "home", initialAuthMode = "login" }) {
                     <div className="featured-books">
                         {filteredBooks.map((book) => (
                             <article className="featured-card" key={book.id}>
-                                <div className="featured-cover">
-                                    <BookIcon />
-                                </div>
+                                <button
+                                    type="button"
+                                    className="book-cover-button"
+                                    onClick={() => {
+                                        setSelectedBook(book);
+                                        openScreen("book-detail");
+                                    }}
+                                    aria-label={`Ver detalles de ${book.titulo}`}
+                                >
+                                    <BookCover book={book} className="featured-cover" />
+                                </button>
                                 <h3>{book.titulo}</h3>
                                 <p>{book.categoria} • {book.editorial}</p>
                                 <strong>{formatPrice(book.precio)}</strong>
                                 <span>{book.stock > 0 ? "Disponible" : "Agotado"}</span>
-                                <div className="card-actions">
-                                    <button className="card-action" type="button" onClick={() => addToCart(book)}>
-                                        Agregar al carrito
-                                    </button>
-                                    <button className="secondary-button" type="button" onClick={() => downloadBook(book)}>
-                                        Descargar
-                                    </button>
-                                </div>
                             </article>
                         ))}
                     </div>
@@ -499,29 +662,107 @@ function logout() {
     setSession(null);
     setAuthMode("login");
     setFeedback("");
-    setScreen("login");
+    setScreen("logout-success");
+    saveToStorage("session", null);
+    saveToStorage("token", null);
 }
-    function handleLogin(event) {
+    async function handleLogin(event) {
         event.preventDefault();
         const form = new FormData(event.currentTarget);
-        const username = form.get("username");
-        const password = form.get("password");
-        const account = accounts.find(
-            (item) => normalizeValue(item.username) === normalizeValue(username) && item.password === password
-        );
+        const username = String(form.get("username") || "").trim();
+        const password = String(form.get("password") || "");
+        const normalizedUsername = normalizeValue(username);
+        const isAdminLogin =
+            (normalizedUsername === "admin" || normalizedUsername === "admin@gmail.com") &&
+            password === "123";
+
+        let account = null;
+
+        if (isAdminLogin) {
+            const adminAccount = cuentasBase.find((item) => normalizeValue(item.role) === "administrador");
+            if (adminAccount) {
+                account = { ...adminAccount };
+            }
+        }
+
+        if (!account) {
+            try {
+                const response = await fetch("/api/users");
+                if (response.ok) {
+                    const users = await response.json();
+                    const apiAccount = users.find(
+                        (user) =>
+                            (user.email === username || user.username === username) &&
+                            user.password === password
+                    );
+                    if (apiAccount) {
+                        account = {
+                            ...apiAccount,
+                            role: normalizeRole(apiAccount.role),
+                            username: apiAccount.username || apiAccount.email || username,
+                        };
+                    }
+                }
+            } catch (error) {
+                console.error("No se pudo validar con la API", error);
+            }
+        }
+
+        if (!account) {
+            account = accounts.find(
+                (item) =>
+                    normalizeValue(item.username) === normalizedUsername ||
+                    normalizeValue(item.email) === normalizedUsername
+            );
+
+            if (account && account.password !== password) {
+                account = null;
+            }
+        }
+
+        if (!account && isAdminLogin) {
+            const adminAccount = cuentasBase.find((item) => item.role === "Administrador");
+            if (adminAccount) {
+                account = { ...adminAccount };
+            }
+        }
 
         if (account) {
-            setSession(account);
-            const nextScreen = postAuthScreen || (account.role === "Administrador" ? "admin" : "user");
+            const normalizedRole = normalizeRole(account.role);
+            const accountWithToken = { ...account, role: normalizedRole, token: account.token || getAuthToken() };
+            const accountExists = accounts.some(
+                (item) =>
+                    normalizeValue(item.username) === normalizeValue(account.username) ||
+                    normalizeValue(item.email) === normalizeValue(account.email)
+            );
+            const nextAccounts = accountExists
+                ? accounts.map((item) =>
+                      normalizeValue(item.username) === normalizeValue(account.username) ||
+                      normalizeValue(item.email) === normalizeValue(account.email)
+                          ? accountWithToken
+                          : item
+                  )
+                : [...accounts, accountWithToken];
+
+            setSession(accountWithToken);
+            setAccounts(nextAccounts);
+            saveToStorage("session", accountWithToken);
+            saveToStorage("token", accountWithToken.token);
+            saveToStorage("accounts", nextAccounts);
+            if (normalizedRole === "Administrador") {
+                window.location.assign(`${ADMIN_APP_URL}/`);
+                return;
+            }
+            const nextScreen = postAuthScreen || "user";
             setScreen(nextScreen);
             setPostAuthScreen(null);
             return;
         }
 
-        setFeedback("Credenciales invalidas. Administrador: admin.libreria / 123456. Usuario demo: demo.usuario / 123456.");
+        setFeedback("Credenciales invalidas. Prueba con admin / 123 o admin@gmail.com / 123.");
     }
 
-async function handleRegister(event) {
+    async function handleRegister(event) {
         event.preventDefault();
         const form = new FormData(event.currentTarget);
         const name = String(form.get("name") || "").trim();
@@ -564,26 +805,28 @@ async function handleRegister(event) {
             city,
         };
 
+        let createdAccount = newAccount;
         try {
-            const respuesta = await fetch("/api/user", {
+            const response = await fetch("/api/users", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    ...newAccount,
-                    rol: 2,
-                }),
+                body: JSON.stringify(newAccount),
             });
-
-            if (respuesta.ok) {
-                const usuarioCreado = await respuesta.json();
-                setAccounts((current) => [...current, { ...newAccount, id: usuarioCreado.id }]);
+            if (response.ok) {
+                createdAccount = await response.json();
+                setFeedback("Cuenta creada y registrada en la API.");
             } else {
-                setAccounts((current) => [...current, newAccount]);
+                throw new Error(`HTTP ${response.status}`);
             }
-        } catch {
-            setAccounts((current) => [...current, newAccount]);
+        } catch (error) {
+            console.error(error);
+            setFeedback("Cuenta creada localmente. Activa la API para persistirla.");
+            if (!createdAccount.id) {
+                createdAccount = { ...createdAccount, id: Date.now() };
+            }
         }
 
+        setAccounts((current) => [...current, createdAccount]);
         setClientes((current) => [
             ...current,
             {
@@ -596,7 +839,15 @@ async function handleRegister(event) {
             },
         ]);
 
-        setSession(newAccount);
+        const accountWithToken = { ...createdAccount, token: getAuthToken() };
+        setSession(accountWithToken);
+        setAccounts((current) => {
+            const nextAccounts = [...current, accountWithToken];
+            saveToStorage("accounts", nextAccounts);
+            return nextAccounts;
+        });
+        saveToStorage("session", accountWithToken);
+        saveToStorage("token", accountWithToken.token);
         const nextScreen = postAuthScreen || "user";
         setScreen(nextScreen);
         setPostAuthScreen(null);
@@ -605,29 +856,36 @@ async function handleRegister(event) {
     async function addBook(event) {
         event.preventDefault();
         const form = new FormData(event.currentTarget);
-        const nuevoLibro = {
-            id: Date.now(),
+        const newBook = {
             titulo: form.get("titulo"),
-            precio: Number(form.get("precio")),
+            precio: Number(form.get("precio")).toFixed(2),
             stock: Number(form.get("stock")),
-            categoria: form.get("categoria"),
-            editorial: form.get("editorial"),
+            id_categoria: 1,
+            id_editorial: 1,
         };
 
         try {
-            const respuesta = await fetch("/api/books", {
+            const response = await fetch(`${API_BASE}/libro`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(nuevoLibro),
+                body: JSON.stringify(newBook),
             });
-            if (respuesta.ok) {
-                const libroCreado = await respuesta.json();
-                setBooks((current) => [...current, libroCreado]);
+            if (response.ok) {
+                const responseData = await response.json();
+                const created = normalizeApiBook(responseData.libro || responseData);
+                setBooks((current) => [...current, created]);
+                setFeedback(`Libro "${created.titulo}" agregado y guardado en la API.`);
             } else {
-                setBooks((current) => [...current, nuevoLibro]);
+                throw new Error(`HTTP ${response.status}`);
             }
-        } catch {
-            setBooks((current) => [...current, nuevoLibro]);
+        } catch (error) {
+            console.error(error);
+            const fallbackBook = {
+                id: books.length ? Math.max(...books.map((item) => item.id)) + 1 : 1,
+                ...newBook,
+            };
+            setBooks((current) => [...current, fallbackBook]);
+            setFeedback(`Libro "${fallbackBook.titulo}" agregado localmente. Activa la API para persistirlo.`);
         }
 
         event.currentTarget.reset();
@@ -635,10 +893,18 @@ async function handleRegister(event) {
 
     async function deleteBook(id) {
         try {
-            await fetch(`/api/books/${id}`, { method: "DELETE" });
-        } catch {
-            // Se ignora si la API no responde.
+            const response = await fetch(`${API_BASE}/libro/${id}`, {
+                method: "DELETE",
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            setFeedback("Libro eliminado y sincronizado con la API.");
+        } catch (error) {
+            console.error(error);
+            setFeedback("Libro eliminado localmente. Activa la API para sincronizar los cambios.");
         }
+
         setBooks((current) => current.filter((book) => book.id !== id));
         setFavorites((current) => current.filter((favoriteId) => favoriteId !== id));
     }
@@ -648,20 +914,33 @@ async function handleRegister(event) {
         if (!book) return;
         const title = window.prompt("Nuevo titulo del libro:", book.titulo);
         if (!title) return;
+        const price = window.prompt("Nuevo precio del libro:", String(book.precio));
+        if (price === null || Number.isNaN(Number(price))) return;
 
-        const libroActualizado = { ...book, titulo: title };
-
+        const updatedBook = {
+            ...book,
+            titulo: title,
+            precio: Number(price).toFixed(2),
+            id_libro: id,
+        };
         try {
-            await fetch(`http://localhost:3000/books/${id}`, {
+            const response = await fetch(`${API_BASE}/libro/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(libroActualizado),
+                body: JSON.stringify(updatedBook),
             });
-        } catch {
-            // Se ignora si la API no responde.
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            const responseData = await response.json();
+            const remoteBook = normalizeApiBook(responseData.libro || responseData);
+            setBooks((current) => current.map((item) => (item.id === id ? remoteBook : item)));
+            setFeedback("Libro actualizado y sincronizado con la API.");
+        } catch (error) {
+            console.error(error);
+            setBooks((current) => current.map((item) => (item.id === id ? updatedBook : item)));
+            setFeedback("Libro actualizado localmente. Activa la API para sincronizarlo.");
         }
-
-        setBooks((current) => current.map((item) => (item.id === id ? libroActualizado : item)));
     }
 
     function toggleFavorite(id) {
@@ -675,10 +954,17 @@ async function handleRegister(event) {
         const form = new FormData(event.currentTarget);
         const text = String(form.get("message") || "").trim();
         if (!text) return;
+
+        const targetNumber = whatsappNumbers.find((item) => item.number === selectedWhatsAppNumber)?.number || whatsappNumbers[0].number;
+        const targetLabel = whatsappNumbers.find((item) => item.number === selectedWhatsAppNumber)?.label || "Soporte";
+        const whatsappUrl = `https://wa.me/${targetNumber}?text=${encodeURIComponent(text)}`;
+
+        window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+
         setChatMessages((current) => [
             ...current,
             { type: "user", text },
-            { type: "agent", text: "Gracias por tu mensaje. Esta es una respuesta de demostracion del chat de contacto." },
+            { type: "agent", text: `Gracias por tu mensaje. Se abrirá WhatsApp para enviarlo a ${targetLabel}.` },
         ]);
         event.currentTarget.reset();
     }
@@ -711,11 +997,11 @@ async function handleRegister(event) {
         return (
             <main className="page-shell">
                 <section className="panel-box login-panel">
-                    <div className="login-brand">
-                        <img className="login-logo" src="/logo-libros.png" alt="Venta de Libros" />
+                    <div className="login-brand compact-login-brand">
+                        <iframe className="login-mark" src="/logo%20.html" title="Logo Venta de Libros" />
                         <div>
-                            <h2>Venta de Libros</h2>
-                            <p>Inicia sesion o registrate para entrar al modulo principal.</p>
+                            <h2>Venta de Libros Digital</h2>
+                            <p>Inicia sesión o regístrate para entrar a la tienda.</p>
                         </div>
                     </div>
 
@@ -787,31 +1073,51 @@ async function handleRegister(event) {
         );
     }
 
+    function renderLogoutSuccessScreen() {
+        return (
+            <main className="logout-success-shell">
+                <section className="logout-success-panel">
+                    <div className="logout-kicker">Venta de Libros Digital</div>
+                    <h1 className="logout-title">Sesión cerrada con éxito</h1>
+                    <p className="logout-subtitle">Tu acceso de usuario se cerró correctamente.</p>
+                    <button
+                        className="logout-success-button"
+                        type="button"
+                        onClick={() => {
+                            setScreen("login");
+                            setAuthMode("login");
+                            setFeedback("");
+                        }}
+                    >
+                        Iniciar sesión
+                    </button>
+                </section>
+            </main>
+        );
+    }
+
     function renderUserHome() {
+        return renderHomeScreen();
+    }
+
+    function renderServicesScreen() {
         return (
             <main>
                 <section className="content-width">
-                    <div className="toolbar">
-                        <div>
-                            <h2>Modulo principal</h2>
-                            <p>{`Has iniciado como ${session?.role.toLowerCase()} con el usuario ${session?.username}.`}</p>
-                        </div>
-                        <button type="button" onClick={logout}>Cerrar sesion</button>
-                    </div>
-
-                    <div className="stats-grid">
-                        <article className="stat-box">
-                            <small>Sesion</small>
-                            <strong>{session?.username}</strong>
-                        </article>
-                        <article className="stat-box">
-                            <small>Hora de ingreso</small>
-                            <strong>{now}</strong>
-                        </article>
-                        <article className="stat-box">
-                            <small>Catalogo</small>
-                            <strong>{books.length} libros</strong>
-                        </article>
+                    {renderSectionHeader({ title: "Servicios", subtitle: "Todo lo que necesitas para elegir, comprar y disfrutar tus libros." })}
+                    <div className="menu-grid">
+                        <button className="menu-card" type="button" onClick={() => openScreen("catalog")}>
+                            <h3>Catálogo digital</h3>
+                            <p>Explora todos los libros disponibles.</p>
+                        </button>
+                        <button className="menu-card" type="button" onClick={() => openScreen("payments")}>
+                            <h3>Compra segura</h3>
+                            <p>Consulta los métodos de pago disponibles.</p>
+                        </button>
+                        <a className="menu-card" href="https://wa.me/573125712998?text=Hola%2C%20necesito%20ayuda%20con%20la%20tienda." target="_blank" rel="noreferrer">
+                            <h3>Atención por WhatsApp</h3>
+                            <p>Recibe ayuda directa de nuestro equipo.</p>
+                        </a>
                     </div>
                 </section>
             </main>
@@ -828,28 +1134,32 @@ async function handleRegister(event) {
                             <p>Gestiona libros, ventas, empleados y clientes.</p>
                         </div>
                         <div className="toolbar-actions">
-                            <button className="secondary-button" type="button" onClick={() => openScreen("user")}>Vista usuario</button>
-                            <button type="button" onClick={logout}>Cerrar sesion</button>
+                            <button className="secondary-button admin-action-button" type="button" onClick={() => openScreen("user")}>Vista usuario</button>
                         </div>
                     </div>
 
                     <div className="menu-grid admin-menu-grid">
-                        <button className="menu-card" type="button" onClick={() => openScreen("admin-books")}>
+                        <button className="menu-card" type="button" onClick={() => openAdminModule("libro")}>
                             <span className="menu-icon">LIB</span>
                             <h3>Libros</h3>
                             <p>Agregar, editar y eliminar registros del catalogo.</p>
                         </button>
-                        <button className="menu-card" type="button" onClick={() => openScreen("admin-sales")}>
+                        <button className="menu-card" type="button" onClick={() => openAdminModule("venta")}>
                             <span className="menu-icon">VEN</span>
                             <h3>Ventas</h3>
                             <p>Consulta historico de ventas registradas.</p>
                         </button>
-                        <button className="menu-card" type="button" onClick={() => openScreen("admin-employees")}>
+                        <button className="menu-card" type="button" onClick={() => openScreen("admin-sales")}>
+                            <span className="menu-icon">PED</span>
+                            <h3>Pedidos</h3>
+                            <p>Revisa los pedidos registrados en el sistema.</p>
+                        </button>
+                        <button className="menu-card" type="button" onClick={() => openAdminModule("empleado")}>
                             <span className="menu-icon">EMP</span>
                             <h3>Empleados</h3>
                             <p>Listado del personal de la libreria.</p>
                         </button>
-                        <button className="menu-card" type="button" onClick={() => openScreen("admin-clients")}>
+                        <button className="menu-card" type="button" onClick={() => openAdminModule("cliente")}>
                             <span className="menu-icon">CLI</span>
                             <h3>Clientes</h3>
                             <p>Usuarios y datos de contacto.</p>
@@ -922,25 +1232,22 @@ async function handleRegister(event) {
                             const isFavorite = favorites.includes(book.id);
                             return (
                                 <article className="book-card" key={book.id}>
-                                    <div className="book-cover">
-                                        <span>{book.categoria}</span>
-                                        <strong>{book.titulo}</strong>
-                                    </div>
+                                    <button
+                                        type="button"
+                                        className="book-cover-button"
+                                        onClick={() => {
+                                            setSelectedBook(book);
+                                            openScreen("book-detail");
+                                        }}
+                                        aria-label={`Ver detalles de ${book.titulo}`}
+                                    >
+                                        <BookCover book={book} className="catalog-cover" />
+                                    </button>
                                     <h3>{book.titulo}</h3>
                                     <p>Editorial: {book.editorial}</p>
                                     <p>Stock: {book.stock}</p>
                                     <strong>{formatPrice(book.precio)}</strong>
                                     <div className="card-actions">
-                                        <button type="button" onClick={() => addToCart(book)}>Agregar al carrito</button>
-                                        <button className="secondary-button" type="button" onClick={() => downloadBook(book)}>
-                                            Descargar
-                                        </button>
-                                        <button className="secondary-button" type="button" onClick={() => {
-                                            setSelectedBook(book);
-                                            openScreen("book-detail");
-                                        }}>
-                                            Ver libro
-                                        </button>
                                         <button className="secondary-button" type="button" onClick={() => toggleFavorite(book.id)}>
                                             {isFavorite ? "Quitar favorito" : "Agregar favorito"}
                                         </button>
@@ -993,33 +1300,32 @@ async function handleRegister(event) {
         return (
             <main>
                 <section className="content-width">
-                    {renderSectionHeader({ title: `Simulación de ${selectedBook.titulo}`, subtitle: "Detalle del libro y opciones de compra." })}
+                    <div className="book-detail-header">
+                        <div>
+                            <h1>Simulación de {selectedBook.titulo}</h1>
+                        </div>
+                        <button type="button" className="book-detail-back" onClick={() => openScreen("home")}>Volver</button>
+                    </div>
+
                     <div className="book-detail-card">
+                        <div className="book-detail-cover-wrap">
+                            <BookCover book={selectedBook} className="detail-cover" />
+                        </div>
+
                         <div className="book-detail-summary">
                             <h2>{selectedBook.titulo}</h2>
                             <p className="book-detail-meta">{selectedBook.categoria} • {selectedBook.editorial}</p>
                             <strong>{formatPrice(selectedBook.precio)}</strong>
                             <p>Stock disponible: {selectedBook.stock}</p>
                             <p className="book-detail-description">
-                                Esta es una simulación de compra digital. Incluye acceso inmediato al libro, envío de PIN de descarga y opción de pago con tarjeta o PSE.
+                                {getBookDescription(selectedBook)}
                             </p>
                         </div>
+
                         <div className="book-detail-actions">
                             <button type="button" onClick={() => addToCart(selectedBook)}>Agregar al carrito</button>
-                            <button type="button" className="secondary-button" onClick={() => {
-                                if (!isAuthenticated) {
-                                    setPostAuthScreen("payments");
-                                    setFeedback("Debes iniciar sesión antes de pagar.");
-                                    setAuthMode("login");
-                                    setScreen("login");
-                                    return;
-                                }
-                                setPendingDownload(selectedBook);
-                                setPendingDownloadEmail(session?.email || "");
-                                setPaymentCompleted(false);
-                                setScreen("payments");
-                            }}>
-                                Ir a pagar
+                            <button type="button" className="secondary-button" onClick={() => downloadBook(selectedBook)}>
+                                Descargar
                             </button>
                         </div>
                     </div>
@@ -1039,16 +1345,16 @@ async function handleRegister(event) {
                             <strong>{session?.name}</strong>
                         </article>
                         <article className="stat-box">
-                            <small>Rol</small>
-                            <strong>{session?.role}</strong>
-                        </article>
-                        <article className="stat-box">
                             <small>Correo</small>
                             <strong>{session?.email}</strong>
                         </article>
                         <article className="stat-box">
                             <small>Ciudad</small>
                             <strong>{session?.city}</strong>
+                        </article>
+                        <article className="stat-box">
+                            <small>Hora de ingreso</small>
+                            <strong className="login-time"><span>{loginTime.date}</span><span>{loginTime.time}</span></strong>
                         </article>
                     </div>
                 </section>
@@ -1130,21 +1436,17 @@ async function handleRegister(event) {
             return;
         }
 
-        const orderNumber = `LB-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, "0")}${String(new Date().getDate()).padStart(2, "0")}-${Math.floor(1000 + Math.random() * 9000)}`;
-        const purchaseItems = pendingDownload
-            ? [{
-                id: pendingDownload.id,
-                title: pendingDownload.titulo,
-                qty: 1,
-                price: pendingDownload.precio,
-            }]
-            : cartDetails.map(({ book, qty }) => ({
-                id: book.id,
-                title: book.titulo,
-                qty,
-                price: book.precio,
-            }));
-        const purchaseTotal = pendingDownload ? pendingDownload.precio : cartTotal;
+        const orderNumber = getOrderNumber();
+        const purchasedBooks = pendingDownload
+            ? [pendingDownload]
+            : cartDetails.map(({ book }) => book).filter(Boolean);
+        const purchaseItems = purchasedBooks.map((book) => ({
+            id: book.id,
+            title: book.titulo,
+            qty: cartDetails.find((item) => item.book.id === book.id)?.qty || 1,
+            price: book.precio,
+        }));
+        const purchaseTotal = purchasedBooks.reduce((sum, book) => sum + book.precio * (cartDetails.find((item) => item.book.id === book.id)?.qty || 1), 0);
 
         setLastPurchase({
             orderNumber,
@@ -1156,17 +1458,37 @@ async function handleRegister(event) {
             date: new Date().toLocaleDateString("es-CO"),
         });
 
+        if (purchasedBooks.length) {
+            setDownloadAccess((current) => {
+                const next = [...current];
+                purchasedBooks.forEach((book) => {
+                    const pin = getRandomPin();
+                    const accessEntry = {
+                        bookId: book.id,
+                        email: pendingDownloadEmail || session?.email || "",
+                        pin,
+                    };
+                    const index = next.findIndex((item) => item.bookId === book.id);
+                    if (index >= 0) {
+                        next[index] = accessEntry;
+                    } else {
+                        next.push(accessEntry);
+                    }
+                });
+                return next;
+            });
+            setVerificationBook(purchasedBooks[0]);
+        }
+
         if (!pendingDownload) {
             setCartItems([]);
         }
-        const purchasedBook = pendingDownload || books.find((book) => book.id === cartDetails[0]?.bookId) || null;
+        const purchasedBook = purchasedBooks[0] || null;
         setSelectedBook(purchasedBook);
         setPendingDownload(null);
         setPendingDownloadEmail("");
         setSelectedBank("");
         setPaymentCompleted(true);
-        setPaymentMethod(title);
-        setPaymentDetailUsed(paymentDetail);
         setFeedback(`Pago exitoso. Simulación de pago con ${title} aprobada.`);
         setScreen("payments");
     }
@@ -1400,7 +1722,7 @@ async function handleRegister(event) {
                                 </form>
                                 <button className="secondary-button" type="button" onClick={() => {
                                     if (book) {
-                                        const newPin = String(Math.floor(100000 + Math.random() * 900000));
+                                        const newPin = getRandomPin();
                                         setDownloadAccess((current) =>
                                             current.map((item) =>
                                                 item.bookId === book.id ? { ...item, pin: newPin } : item
@@ -1428,13 +1750,22 @@ async function handleRegister(event) {
                     {renderSectionHeader({ title: "Contactos", subtitle: "Canales de ayuda al usuario." })}
                     <div className="menu-grid">
                         <article className="menu-card">
-                            <h3>Linea de atencion</h3>
-                            <p>300 000 0000</p>
-                        </article>
-                        <article className="menu-card">
                             <h3>Correo</h3>
                             <p>contacto@libreria.com</p>
                         </article>
+                        {whatsappNumbers.map((item) => (
+                            <a
+                                key={item.id}
+                                className="menu-card"
+                                href={`https://wa.me/${item.number}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                style={{ textDecoration: "none" }}
+                            >
+                                <h3>WhatsApp · {item.label}</h3>
+                                <p>{item.number}</p>
+                            </a>
+                        ))}
                         <button className="menu-card" type="button" onClick={() => openScreen("chat")}>
                             <h3>Chat</h3>
                             <p>Abrir chat de contacto en linea.</p>
@@ -1496,6 +1827,20 @@ async function handleRegister(event) {
                 <section className="content-width">
                     {renderSectionHeader({ title: "Chat de contacto", subtitle: "Conversacion de demostracion.", backTo: "support" })}
                     <div className="panel-box chat-shell">
+                        <div className="chat-select-wrap">
+                            <label htmlFor="whatsapp-contact">Enviar a:</label>
+                            <select
+                                id="whatsapp-contact"
+                                value={selectedWhatsAppNumber}
+                                onChange={(event) => setSelectedWhatsAppNumber(event.target.value)}
+                            >
+                                {whatsappNumbers.map((item) => (
+                                    <option key={item.id} value={item.number}>
+                                        {item.label} - {item.number}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                         <div className="chat-messages">
                             {chatMessages.map((message, index) => (
                                 <div className={`chat-bubble ${message.type}`} key={`${message.type}-${index}`}>
@@ -1552,7 +1897,9 @@ async function handleRegister(event) {
     const screens = {
         home: renderHomeScreen(),
         login: renderLoginScreen(),
+        "logout-success": renderLogoutSuccessScreen(),
         user: renderUserHome(),
+        services: renderServicesScreen(),
         admin: renderAdminHome(),
         catalog: renderCatalogScreen(),
         "book-detail": renderBookDetailScreen(),
@@ -1629,27 +1976,36 @@ async function handleRegister(event) {
         }),
     };
 
+    const hideChrome = screen === "login" || screen === "logout-success";
+
     return (
         <>
-            <Header subtitle={screen === "login" ? "Portal de acceso" : "Sistema de venta de libros digitales"} />
-            <Nav
-                menuAbierto={menuAbierto}
-                setMenuAbierto={setMenuAbierto}
-                isLoggedIn={isAuthenticated}
-                onLogout={logout}
-                searchTerm={searchTerm}
-                onSearchTermChange={setSearchTerm}
-                onSearchSubmit={handleSearchSubmit}
-                onSearchClear={handleSearchClear}
-                onHomeClick={() => {
-                    setSelectedCategory("Todos");
-                    setSearchTerm("");
-                    setSearchQuery("");
-                    setScreen("home");
-                }}
-            />
+            {!hideChrome && (
+                <Header
+                    subtitle={screen === "login" ? "Portal de acceso" : "Sistema de venta de libros digitales"}
+                    showBrand={screen !== "login"}
+                />
+            )}
+            {!hideChrome && (
+                <Nav
+                    menuAbierto={menuAbierto}
+                    setMenuAbierto={setMenuAbierto}
+                    isLoggedIn={isAuthenticated}
+                    searchTerm={searchTerm}
+                    onSearchTermChange={setSearchTerm}
+                    onSearchSubmit={handleSearchSubmit}
+                    onSearchClear={handleSearchClear}
+                    onHomeClick={() => {
+                        setSelectedCategory("Todos");
+                        setSearchTerm("");
+                        setSearchQuery("");
+                        setScreen("home");
+                    }}
+                    onLogout={logout}
+                />
+            )}
             {screens[screen] || screens.login}
-            <Footer />
+            {!hideChrome && <Footer />}
         </>
     );
 }
