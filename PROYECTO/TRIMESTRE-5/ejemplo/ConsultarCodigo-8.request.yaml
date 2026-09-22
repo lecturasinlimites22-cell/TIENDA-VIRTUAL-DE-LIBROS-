@@ -1,0 +1,42 @@
+$kind: http-request
+name: ConsultarCodigo
+description: |-
+  ## Consultar Categoría por Código
+
+  Retorna la información de una categoría específica identificada por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `http://127.0.0.1:8000/api/categorias/16` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción                  |
+  |------------|------|------------------------------|
+  | `id`       | int  | ID de la categoría a consultar |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Categoría encontrada correctamente.
+  - **404 Not Found** – La categoría no existe.
+url: http://127.0.0.1:8000/api/categorias/16
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \    \"id_categoria\": 16,\r
+
+    \    \"nombre\": \"Literatura\",\r
+
+    \    \"descripcion\": \"Obras clásicas\"\r
+
+    }"
+order: 47000

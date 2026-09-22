@@ -1,0 +1,24 @@
+$kind: http-request
+name: ConsultarLibro
+description: |-
+  ## Consultar Libros
+
+  Retorna el listado completo de libros disponibles en el sistema.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `http://127.0.0.1:8000/api/libros` |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Lista de libros obtenida correctamente.
+  - **404 Not Found** – No se encontraron libros registrados.
+url: http://127.0.0.1:8000/api/libros
+method: GET
+body:
+  type: json
+  content: ""
+order: 36000

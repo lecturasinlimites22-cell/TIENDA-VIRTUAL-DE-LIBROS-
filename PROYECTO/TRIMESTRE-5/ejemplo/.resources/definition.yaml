@@ -1,0 +1,6 @@
+$kind: collection
+description: ""
+variables:
+  username: admin
+  password: "123"
+  token: ""

@@ -1,0 +1,29 @@
+$kind: http-request
+name: ConsultarDetalle-Venta
+description: |-
+  ## Consultar Detalles de Venta
+
+  Retorna el listado completo de detalles de ventas registrados en el sistema.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `http://127.0.0.1:8000/api/detalles-venta` |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Lista de detalles de venta obtenida correctamente.
+  - **404 Not Found** – No se encontraron detalles de venta registrados.
+url: http://127.0.0.1:8000/api/detalles-venta
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: ""
+order: 31000

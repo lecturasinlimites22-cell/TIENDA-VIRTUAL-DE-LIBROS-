@@ -1,0 +1,31 @@
+$kind: http-request
+description: |-
+  ## Consultar Usuarios
+
+  Retorna el listado completo de los roles registrados en el sistema.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+
+  | Campo | Valor |
+  | --- | --- |
+  | Método | `GET` |
+  | URL | `http://127.0.0.1:8000/api/roles` |
+
+  ### ✅ Respuesta esperada
+
+  - **200 OK** – Lista de usuarios obtenida correctamente.
+      
+  - **404 Not Found** – No se encontraron usuarios registrados.
+url: http://127.0.0.1:8000/api/roles
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: ""
+order: 1000

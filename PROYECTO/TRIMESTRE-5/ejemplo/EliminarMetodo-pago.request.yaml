@@ -1,0 +1,39 @@
+$kind: http-request
+description: |-
+  ## Eliminar Método de Pago
+
+  Elimina un método de pago del sistema identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `DELETE` |
+  | URL     | `http://127.0.0.1:8000/api/metodos-pago/17` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción                        |
+  |------------|------|------------------------------------|
+  | `id`       | int  | ID del método de pago a eliminar   |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Método de pago eliminado correctamente.
+  - **404 Not Found** – El método de pago no existe.
+url: http://127.0.0.1:8000/api/metodos-pago/17
+method: DELETE
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \        \"id_metodo_pago\": 17,\r
+
+    \        \"nombre\": \"Nequi\"\r
+
+    \    }"
+order: 30000

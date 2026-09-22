@@ -1,0 +1,40 @@
+$kind: http-request
+name: CosultarCodigo
+description: |-
+  ## Consultar Autor por Código
+
+  Retorna la información de un autor específico identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `http://127.0.0.1:8000/api/autores/16` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción              |
+  |------------|------|--------------------------|
+  | `id`       | int  | ID del autor a consultar |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Autor encontrado correctamente.
+  - **404 Not Found** – El autor no existe.
+url: http://127.0.0.1:8000/api/autores/16
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \        \"id_autor\": 16,\r
+
+    \        \"nombre\": \"Yuval Noah Harari\"\r
+
+    \    }"
+order: 42000

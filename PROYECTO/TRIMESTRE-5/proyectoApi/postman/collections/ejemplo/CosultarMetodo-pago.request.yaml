@@ -1,0 +1,25 @@
+$kind: http-request
+description: |-
+  ## Consultar Métodos de Pago
+
+  Retorna el listado completo de métodos de pago disponibles en el sistema.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `URL pendiente de configurar` |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Lista de métodos de pago obtenida correctamente.
+  - **404 Not Found** – No se encontraron métodos de pago registrados.
+url: ""
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+order: 26000

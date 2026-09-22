@@ -1,0 +1,42 @@
+$kind: http-request
+name: ModificarLibro-Autor
+description: |-
+  ## Modificar Relación Libro-Autor
+
+  Actualiza la relación entre un libro y un autor en el sistema identificada por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `PUT` |
+  | URL     | `http://127.0.0.1:8000/api/libro-autores/18` |
+
+  ### 📥 Body (JSON)
+  | Campo      | Tipo | Descripción              |
+  |------------|------|--------------------------|
+  | `id_libro` | int  | Nuevo ID del libro       |
+  | `id_autor` | int  | Nuevo ID del autor       |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Relación libro-autor actualizada correctamente.
+  - **404 Not Found** – La relación no existe.
+  - **400 Bad Request** – Datos inválidos o incompletos.
+url: http://127.0.0.1:8000/api/libro-autores/18
+method: PUT
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \        \"id_libro\": 19,\r
+
+    \        \"id_autor\": 19\r
+
+    \    }"
+order: 69000

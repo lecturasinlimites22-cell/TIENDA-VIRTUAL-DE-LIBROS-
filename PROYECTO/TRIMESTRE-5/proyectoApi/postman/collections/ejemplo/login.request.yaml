@@ -1,0 +1,46 @@
+$kind: http-request
+description: |-
+  ## Iniciar Sesión (Login)
+
+  Autentica a un usuario en el sistema mediante nombre de usuario y contraseña. Retorna un token Bearer de acceso para usar en endpoints protegidos.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `POST` |
+  | URL     | `http://127.0.0.1:8000/api/login` |
+
+  ### 📥 Body (JSON)
+  | Campo      | Tipo   | Descripción              |
+  |------------|--------|--------------------------|
+  | `username` | string | Nombre de usuario        |
+  | `password` | string | Contraseña del usuario   |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Autenticación exitosa. Retorna un token Bearer de acceso.
+  - **401 Unauthorized** – Credenciales inválidas.
+url: http://127.0.0.1:8000/api/login
+method: POST
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "username": "admin",
+      "password": "123"
+    }
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      const response = pm.response.json();
+      if (response.token) {
+          pm.collectionVariables.set("token", response.token);
+      }
+    language: text/javascript
+order: 72000

@@ -1,0 +1,42 @@
+$kind: http-request
+name: ModificarRol-Usuario
+description: |-
+  ## Modificar Asignación Rol-Usuario
+
+  Actualiza la asignación de un rol a un usuario en el sistema identificada por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `PUT` |
+  | URL     | `http://127.0.0.1:8000/api/rol-usuarios/13` |
+
+  ### 📥 Body (JSON)
+  | Campo        | Tipo   | Descripción                      |
+  |--------------|--------|----------------------------------|
+  | `id_rol`     | string | Nuevo ID del rol a asignar       |
+  | `id_usuario` | string | ID del usuario al que se asigna  |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Asignación rol-usuario actualizada correctamente.
+  - **404 Not Found** – La asignación no existe.
+  - **400 Bad Request** – Datos inválidos o incompletos.
+url: http://127.0.0.1:8000/api/rol-usuarios/13
+method: PUT
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+order: 15000
+body:
+  type: json
+  content: "{\r
+
+    \    \"id_rol\": \"13\",\r
+
+    \    \"id_usuario\": \"4\"\r
+
+    }"

@@ -1,0 +1,53 @@
+$kind: http-request
+name: CrearLibro
+description: |-
+  ## Crear Libro
+
+  Registra un nuevo libro en el sistema con su título, precio, stock, categoría y editorial.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `POST` |
+  | URL     | `http://127.0.0.1:8000/api/libros` |
+
+  ### 📥 Body (JSON)
+  | Campo          | Tipo    | Descripción                    |
+  |----------------|---------|--------------------------------|
+  | `id_libro`     | int     | ID del libro                   |
+  | `titulo`       | string  | Título del libro               |
+  | `precio`       | decimal | Precio del libro               |
+  | `stock`        | int     | Cantidad disponible en stock   |
+  | `id_categoria` | int     | ID de la categoría del libro   |
+  | `id_editorial` | int     | ID de la editorial del libro   |
+
+  ### ✅ Respuesta esperada
+  - **201 Created** – Libro creado correctamente.
+  - **400 Bad Request** – Datos inválidos o incompletos.
+url: http://127.0.0.1:8000/api/libros
+method: POST
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \        \"id_libro\": 18,\r
+
+    \        \"titulo\": \"El principito\",\r
+
+    \        \"precio\": \"75000.00\",\r
+
+    \        \"stock\": 10,\r
+
+    \        \"id_categoria\": null,\r
+
+    \        \"id_editorial\": null\r
+
+    \    }"
+order: 38000

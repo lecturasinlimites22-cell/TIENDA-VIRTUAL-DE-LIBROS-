@@ -1,0 +1,34 @@
+$kind: http-request
+name: ConsultarCodigo
+description: |-
+  ## Consultar Rol por Código
+
+  Retorna la información de un rol específico identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `http://127.0.0.1:8000/api/roles/1` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción           |
+  |------------|------|-----------------------|
+  | `id`       | int  | ID del rol a consultar |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Rol encontrado correctamente.
+  - **404 Not Found** – El rol no existe.
+url: http://127.0.0.1:8000/api/roles/1
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: ""
+order: 1324

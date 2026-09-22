@@ -1,0 +1,40 @@
+$kind: http-request
+name: EliminarRol-Usuario
+description: |-
+  ## Eliminar Asignación Rol-Usuario
+
+  Elimina la asignación de un rol a un usuario del sistema identificada por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `DELETE` |
+  | URL     | `http://127.0.0.1:8000/api/rol-usuarios/13` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción                              |
+  |------------|------|------------------------------------------|
+  | `id`       | int  | ID de la asignación rol-usuario a eliminar |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Asignación rol-usuario eliminada correctamente.
+  - **404 Not Found** – La asignación no existe.
+url: http://127.0.0.1:8000/api/rol-usuarios/13
+method: DELETE
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \    \"id_rol\": \"13\",\r
+
+    \    \"id_usuario\": \"4\"\r
+
+    }"
+order: 16000

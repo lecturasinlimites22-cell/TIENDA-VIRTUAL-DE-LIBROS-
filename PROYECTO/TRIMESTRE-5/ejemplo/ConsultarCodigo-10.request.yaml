@@ -1,0 +1,37 @@
+$kind: http-request
+name: ConsultarCodigo
+description: |-
+  ## Consultar Editorial por Código
+
+  Retorna la información de una editorial específica identificada por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `http://127.0.0.1:8000/api/editoriales/16` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción                |
+  |------------|------|----------------------------|
+  | `id`       | int  | ID de la editorial a consultar |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Editorial encontrada correctamente.
+  - **404 Not Found** – La editorial no existe.
+url: http://127.0.0.1:8000/api/editoriales/16
+method: GET
+body:
+  type: json
+  content: " {\r
+
+    \        \"id_editorial\": 16,\r
+
+    \        \"nombre\": \"Penguin Random House\",\r
+
+    \        \"pais\": \"Estados Unidos\"\r
+
+    \    }"
+order: 57000

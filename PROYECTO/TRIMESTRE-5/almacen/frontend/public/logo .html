@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Logo Libro Digital — SVG 100% Código</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%}
+body{
+  overflow:hidden;display:grid;place-items:center;
+  background:transparent;
+}
+.logo{width:min(98vw,980px);height:min(98vh,980px);perspective:1400px}
+svg{width:100%;height:100%;display:block;overflow:visible}
+.book{transform-origin:450px 500px;animation:bookFloat 4.8s ease-in-out infinite}
+.orbit{transform-origin:450px 450px;animation:spin 18s linear infinite}
+.orbit.r{animation-direction:reverse;animation-duration:12s}
+.pulse{animation:pulse 1.8s ease-in-out infinite}
+.tw{animation:twinkle 2.2s ease-in-out infinite}
+.page{transform-box:fill-box;transform-origin:bottom center}
+@keyframes bookFloat{0%,100%{transform:translateY(0) rotateZ(0)}50%{transform:translateY(-7px) rotateZ(.35deg)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+@keyframes twinkle{0%,100%{opacity:.15}50%{opacity:1}}
+@media(max-width:600px){.logo{width:100vw;height:100vw}}
+</style>
+</head>
+<body>
+<div class="logo" id="logo">
+
+<svg viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg">
+
+<defs>
+
+<!-- Fondo -->
+<radialGradient id="bg">
+ <stop offset="0" stop-color="#0b3b70" stop-opacity=".55"/>
+ <stop offset=".42" stop-color="#052347" stop-opacity=".35"/>
+ <stop offset="1" stop-color="#000" stop-opacity="0"/>
+</radialGradient>
+
+<!-- Oro -->
+<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+ <stop offset="0" stop-color="#fff9bd"/>
+ <stop offset=".13" stop-color="#e4a52f"/>
+ <stop offset=".30" stop-color="#fff0a0"/>
+ <stop offset=".52" stop-color="#a9670d"/>
+ <stop offset=".72" stop-color="#ffdc6b"/>
+ <stop offset="1" stop-color="#7b4708"/>
+</linearGradient>
+
+<linearGradient id="gold2" x1="0" y1="0" x2="1" y2="0">
+ <stop offset="0" stop-color="#754306"/>
+ <stop offset=".35" stop-color="#f8ca59"/>
+ <stop offset=".55" stop-color="#fff2a0"/>
+ <stop offset="1" stop-color="#9a5d0a"/>
+</linearGradient>
+
+<!-- Cuero azul/negro -->
+<linearGradient id="leather" x1="0" y1="0" x2="1" y2="1">
+ <stop offset="0" stop-color="#253b5a"/>
+ <stop offset=".18" stop-color="#122641"/>
+ <stop offset=".5" stop-color="#071528"/>
+ <stop offset=".82" stop-color="#020814"/>
+ <stop offset="1" stop-color="#00030a"/>
+</linearGradient>
+
+<!-- Páginas -->
+<linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+ <stop offset="0" stop-color="#fffef0"/>
+ <stop offset=".24" stop-color="#f7f0d2"/>
+ <stop offset=".55" stop-color="#ddd3b1"/>
+ <stop offset=".82" stop-color="#b1a586"/>
+ <stop offset="1" stop-color="#6d644f"/>
+</linearGradient>
+
+<!-- Azul -->
+<linearGradient id="cyan" x1="0" y1="0" x2="1" y2="1">
+ <stop offset="0" stop-color="#d5ffff"/>
+ <stop offset=".18" stop-color="#2fffff"/>
+ <stop offset=".45" stop-color="#00bfff"/>
+ <stop offset=".72" stop-color="#0065ff"/>
+ <stop offset="1" stop-color="#111ca8"/>
+</linearGradient>
+
+<radialGradient id="gem" cx=".28" cy=".18">
+ <stop offset="0" stop-color="#fff"/>
+ <stop offset=".16" stop-color="#c8ffff"/>
+ <stop offset=".4" stop-color="#19eaff"/>
+ <stop offset=".72" stop-color="#0872ff"/>
+ <stop offset="1" stop-color="#091b9f"/>
+</radialGradient>
+
+<!-- Holograma -->
+<linearGradient id="holo" x1="0" y1="1" x2="1" y2="0">
+ <stop offset="0" stop-color="#001d70"/>
+ <stop offset=".35" stop-color="#006cff"/>
+ <stop offset=".7" stop-color="#00dfff"/>
+ <stop offset="1" stop-color="#0750e9"/>
+</linearGradient>
+
+<!-- Textura sutil de cuero -->
+<filter id="texture">
+ <feTurbulence type="fractalNoise" baseFrequency=".75" numOctaves="2" seed="8" result="n"/>
+ <feColorMatrix in="n" type="saturate" values="0" result="g"/>
+ <feBlend in="SourceGraphic" in2="g" mode="soft-light"/>
+</filter>
+
+<filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+ <feGaussianBlur stdDeviation="6" result="b"/>
+ <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+</filter>
+
+<filter id="bigGlow" x="-100%" y="-100%" width="300%" height="300%">
+ <feGaussianBlur stdDeviation="17" result="b"/>
+ <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+</filter>
+
+<filter id="shadow" x="-100%" y="-100%" width="300%" height="300%">
+ <feGaussianBlur stdDeviation="18"/>
+</filter>
+
+<filter id="whiteGlow" x="-100%" y="-100%" width="300%" height="300%">
+ <feGaussianBlur stdDeviation="2.5" result="b"/>
+ <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+</filter>
+
+</defs>
+
+<!-- ========================= FONDO ========================= -->
+<rect width="900" height="900" fill="transparent"/>
+<circle cx="450" cy="455" r="390" fill="url(#bg)"/>
+<circle cx="450" cy="455" r="275" fill="#008cff" opacity=".10" filter="url(#bigGlow)"/>
+<circle cx="450" cy="455" r="205" fill="#00eaff" opacity=".055" filter="url(#bigGlow)"/>
+
+<!-- ========================= ANILLO METÁLICO ========================= -->
+<circle cx="450" cy="450" r="348" fill="none" stroke="#1b0e02" stroke-width="31"/>
+<circle cx="450" cy="450" r="348" fill="none" stroke="url(#gold)" stroke-width="12"/>
+<circle cx="450" cy="450" r="324" fill="none" stroke="#00eaff" stroke-width="4" filter="url(#glow)"/>
+<circle cx="450" cy="450" r="335" fill="none" stroke="#f4c85b" stroke-width="2" opacity=".7"/>
+
+<!-- ========================= ÓRBITAS ========================= -->
+<g class="orbit">
+ <ellipse cx="450" cy="450" rx="398" ry="118" fill="none" stroke="#00efff" stroke-width="4" opacity=".8" filter="url(#glow)"/>
+</g>
+<g class="orbit r">
+ <ellipse cx="450" cy="450" rx="378" ry="165" fill="none" stroke="#0878ff" stroke-width="3" opacity=".8"/>
+</g>
+<g class="orbit">
+ <ellipse cx="450" cy="450" rx="345" ry="218" fill="none" stroke="#69ffff" stroke-width="2" stroke-dasharray="8 18" opacity=".8"/>
+</g>
+
+<!-- ========================= GEMAS ========================= -->
+<g filter="url(#glow)">
+ <path d="M450 70L494 114L450 161L406 114Z" fill="url(#gem)" stroke="url(#gold)" stroke-width="9"/>
+ <path d="M450 87L477 114L450 143L423 114Z" fill="none" stroke="#b8ffff" stroke-width="2"/>
+ <path d="M65 450L108 407L151 450L108 493Z" fill="url(#gem)" stroke="url(#gold)" stroke-width="9"/>
+ <path d="M749 450L792 407L835 450L792 493Z" fill="url(#gem)" stroke="url(#gold)" stroke-width="9"/>
+ <path d="M450 739L494 783L450 830L406 783Z" fill="url(#gem)" stroke="url(#gold)" stroke-width="9"/>
+</g>
+
+<!-- ========================= ESTRELLAS ========================= -->
+<g fill="#fff" filter="url(#whiteGlow)">
+ <circle class="tw" cx="148" cy="205" r="4"/>
+ <circle class="tw" cx="225" cy="151" r="3"/>
+ <circle class="tw" cx="292" cy="120" r="3"/>
+ <circle class="tw" cx="704" cy="175" r="4"/>
+ <circle class="tw" cx="763" cy="244" r="3"/>
+ <circle class="tw" cx="795" cy="320" r="4"/>
+ <circle class="tw" cx="113" cy="557" r="4"/>
+ <circle class="tw" cx="155" cy="650" r="3"/>
+ <circle class="tw" cx="770" cy="620" r="4"/>
+ <circle class="tw" cx="686" cy="716" r="3"/>
+ <circle class="tw" cx="337" cy="142" r="2.5"/>
+ <circle class="tw" cx="575" cy="153" r="2.5"/>
+</g>
+
+<!-- ========================= LIBRO ========================= -->
+<g class="book">
+
+<!-- sombra -->
+<ellipse cx="453" cy="683" rx="305" ry="49" fill="#000" opacity=".82" filter="url(#shadow)"/>
+
+<!-- bloque de hojas detrás de la cubierta izquierda -->
+<g fill="url(#paper)" stroke="#b9a979" stroke-width="3">
+ <path d="M151 282Q179 234 232 222L436 288L430 323L178 276Z"/>
+ <path d="M158 274Q194 218 246 211L438 282L432 313L184 266Z"/>
+ <path d="M167 266Q207 204 261 200L441 278L435 304L191 256Z"/>
+ <path d="M177 257Q218 191 278 188L444 273L438 297L198 247Z"/>
+</g>
+<g fill="none" stroke="#fff7d9" stroke-width="3" opacity=".75">
+ <path d="M177 270L430 319"/>
+ <path d="M187 260L434 309"/>
+ <path d="M199 249L438 299"/>
+ <path d="M212 238L440 290"/>
+</g>
+
+<!-- ---------- CUBIERTA GRUESA ---------- -->
+<path d="M140 278Q147 237 199 226L451 290L451 655L180 592Q145 580 140 538Z"
+      fill="#00030a" stroke="#000" stroke-width="23"/>
+
+<!-- cubierta -->
+<path d="M163 281Q169 252 205 244L432 301L432 630L197 571Q171 565 163 535Z"
+      fill="url(#leather)" stroke="url(#gold)" stroke-width="8"/>
+
+<!-- doble marco -->
+<path d="M184 299L411 354L411 605L205 552Z"
+      fill="none" stroke="#9a6817" stroke-width="4"/>
+<path d="M195 311L399 360L399 591L215 544Z"
+      fill="none" stroke="#f1c65b" stroke-width="2" opacity=".85"/>
+
+<!-- ---------- FILIGRANA SUPERIOR IZQUIERDA ---------- -->
+<g fill="none" stroke="url(#gold)" stroke-width="5.5">
+ <path d="M184 298C210 315 225 315 244 292C224 324 230 341 254 354C224 339 205 341 184 361C205 334 205 316 184 298Z"/>
+ <path d="M200 307C212 319 220 320 231 308"/>
+ <circle cx="192" cy="314" r="5"/>
+</g>
+
+<!-- ---------- FILIGRANA INFERIOR IZQUIERDA ---------- -->
+<g fill="none" stroke="url(#gold)" stroke-width="5.5">
+ <path d="M188 510C212 494 228 500 247 520C223 521 220 540 241 560C214 541 200 541 187 561C204 537 205 526 188 510Z"/>
+ <path d="M202 528C216 520 225 524 233 535"/>
+ <circle cx="194" cy="548" r="5"/>
+</g>
+
+<!-- ---------- FILIGRANA SUPERIOR DERECHA ---------- -->
+<g fill="none" stroke="url(#gold)" stroke-width="5">
+ <path d="M371 330C393 316 412 325 425 348C403 340 396 351 411 371"/>
+ <path d="M385 337C398 333 407 339 412 350"/>
+</g>
+
+<!-- ---------- SÍMBOLO DORADO ---------- -->
+<g transform="translate(218 373)" fill="none" stroke="url(#gold)" stroke-width="9" stroke-linejoin="round">
+ <path d="M0 38Q45 9 90 38V130Q45 102 0 130Z"/>
+ <path d="M90 38Q135 9 180 38V130Q135 102 90 130"/>
+ <path d="M90 38V130"/>
+</g>
+
+<!-- gema de portada -->
+<path d="M315 320L343 349L315 380L287 349Z"
+      fill="url(#gem)" stroke="url(#gold)" stroke-width="6" filter="url(#glow)"/>
+
+<!-- ---------- PROTECTORES ---------- -->
+<path d="M164 276L201 285L196 321L164 311Z" fill="url(#gold)"/>
+<circle cx="177" cy="291" r="5" fill="#fff2a0"/>
+<path d="M166 534L201 542L196 576L166 567Z" fill="url(#gold)"/>
+<circle cx="178" cy="548" r="5" fill="#fff2a0"/>
+
+<!-- ==================== LOMO ==================== -->
+<path d="M430 299Q450 281 470 299L493 626Q474 654 450 643Q433 634 430 615Z"
+      fill="#071629" stroke="url(#gold)" stroke-width="8"/>
+
+<path d="M445 315Q453 307 461 315L470 611Q458 620 450 611Z"
+      fill="#002b65" opacity=".9"/>
+
+<rect class="pulse" x="451" y="338" width="10" height="273" rx="5"
+      fill="#00f3ff" filter="url(#bigGlow)"/>
+
+<ellipse cx="450" cy="360" rx="29" ry="13" fill="none" stroke="url(#gold)" stroke-width="8"/>
+<ellipse cx="455" cy="421" rx="29" ry="13" fill="none" stroke="url(#gold)" stroke-width="8"/>
+<ellipse cx="460" cy="482" rx="29" ry="13" fill="none" stroke="url(#gold)" stroke-width="8"/>
+<ellipse cx="465" cy="600" rx="25" ry="11" fill="none" stroke="url(#gold)" stroke-width="6"/>
+
+<!-- relieve y reflejo del lomo -->
+<path d="M438 320Q450 307 462 320L474 608Q460 627 449 612Z"
+      fill="none" stroke="#b9faff" stroke-width="2" opacity=".55"/>
+<ellipse cx="450" cy="363" rx="33" ry="15" fill="none" stroke="#ffd967" stroke-width="3" opacity=".9"/>
+<ellipse cx="457" cy="485" rx="33" ry="15" fill="none" stroke="#ffd967" stroke-width="3" opacity=".9"/>
+
+<!-- ==================== PÁGINAS DERECHAS ==================== -->
+<!-- abanico de hojas y cantos visibles -->
+<path d="M470 298Q538 256 686 290Q748 304 781 345L740 594Q712 635 474 640Z"
+      fill="#8f866d" stroke="#302b21" stroke-width="8"/>
+<path d="M473 305Q544 268 691 301Q746 313 774 349L734 590Q704 624 476 634Z"
+      fill="none" stroke="#eee4c4" stroke-width="6" opacity=".72"/>
+<path d="M475 312Q545 276 695 309Q741 320 767 352L728 583Q697 614 479 627Z"
+      fill="none" stroke="#b8ad8d" stroke-width="5" opacity=".8"/>
+<path d="M469 300Q541 263 687 297Q739 309 767 349L729 584Q699 627 474 631Z"
+      fill="#6d6550" stroke="#02050a" stroke-width="19"/>
+
+<!-- páginas inferiores individuales -->
+<path d="M479 319Q550 286 698 318Q724 325 748 350L717 574Q690 600 484 616Z"
+      fill="url(#paper)" stroke="#9e936f" stroke-width="3"/>
+
+<path d="M485 330Q555 300 704 330Q724 336 741 354L710 566Q684 592 489 609Z"
+      fill="none" stroke="#fff4d0" stroke-width="4" opacity=".7"/>
+
+<!-- abanico de cantos inferiores -->
+<g fill="none" stroke="#d9cda9" stroke-width="4" opacity=".8">
+ <path d="M491 606Q685 588 714 560"/>
+ <path d="M488 614Q686 598 719 570"/>
+ <path d="M486 622Q690 607 723 579"/>
+ <path d="M484 630Q696 615 727 588"/>
+</g>
+
+<!-- páginas escalonadas visibles en el borde exterior -->
+<g fill="none" stroke="#f5ebcb" stroke-width="3" opacity=".9">
+ <path d="M701 323Q735 332 758 354L729 574"/>
+ <path d="M708 326Q743 337 764 358L735 570"/>
+ <path d="M715 330Q751 342 770 363L741 565"/>
+ <path d="M722 335Q758 347 776 369L747 559"/>
+ <path d="M729 340Q764 352 782 375L753 552"/>
+</g>
+
+<!-- líneas -->
+<g fill="none" stroke="#776e58" stroke-width="3" opacity=".52">
+ <path d="M508 365Q605 338 705 366"/>
+ <path d="M504 389Q605 362 700 392"/>
+ <path d="M501 413Q598 387 695 417"/>
+ <path d="M497 437Q592 412 689 442"/>
+ <path d="M494 461Q586 437 685 466"/>
+ <path d="M491 485Q580 461 680 490"/>
+ <path d="M488 509Q575 486 676 514"/>
+ <path d="M486 533Q570 511 671 538"/>
+</g>
+
+<!-- ==================== HOLOGRAMA ==================== -->
+<path d="M535 309Q610 287 693 318Q716 326 729 350L706 482Q625 445 539 467Z"
+      fill="url(#holo)" stroke="#00f2ff" stroke-width="5" filter="url(#glow)"/>
+
+<!-- estrellas dentro -->
+<g fill="#bfffff" filter="url(#glow)">
+ <circle cx="575" cy="340" r="2"/>
+ <circle cx="600" cy="322" r="2"/>
+ <circle cx="680" cy="340" r="2"/>
+ <circle cx="700" cy="365" r="2"/>
+</g>
+
+<!-- luna -->
+<circle cx="650" cy="345" r="24" fill="#e9ffff" filter="url(#whiteGlow)"/>
+<circle cx="658" cy="339" r="22" fill="#0c6bd0" opacity=".25"/>
+
+<!-- montañas -->
+<path d="M542 443L578 394L603 416L635 374L665 414L696 383L727 439L727 480L541 468Z"
+      fill="#03183b"/>
+
+<!-- árboles -->
+<g fill="#02142f">
+ <path d="M590 431l13-30 13 30zM594 447l9-24 9 24z"/>
+ <path d="M675 430l14-34 14 34zM678 448l11-27 11 27z"/>
+</g>
+
+<!-- río -->
+<path d="M700 416C669 435 650 447 628 454C604 462 583 462 560 454"
+      fill="none" stroke="#00f3ff" stroke-width="6" filter="url(#glow)"/>
+<path d="M693 429C662 445 643 455 620 461"
+      fill="none" stroke="#9fffff" stroke-width="2"/>
+
+<!-- ==================== PÁGINAS LEVANTADAS ==================== -->
+<g class="page">
+
+<path d="M468 315Q493 216 565 175Q530 254 495 355Z"
+      fill="#e8dfc1" stroke="#a9925f" stroke-width="4"/>
+<path d="M474 315Q522 205 604 187Q548 258 502 356Z"
+      fill="#fff9df" stroke="#bdab78" stroke-width="4"/>
+<path d="M482 316Q553 198 656 213Q575 271 507 356Z"
+      fill="#f4edcf" stroke="#9f8954" stroke-width="4"/>
+
+<path d="M470 315Q505 229 589 188Q540 255 505 354Z"
+      fill="url(#paper)" stroke="url(#gold)" stroke-width="5"/>
+
+<path d="M477 315Q542 207 640 225Q555 271 505 355Z"
+      fill="#f5eed2" stroke="#aa965f" stroke-width="4"/>
+
+<path d="M489 315Q570 228 691 260Q585 294 510 356Z"
+      fill="#fff9df" stroke="url(#gold)" stroke-width="4"/>
+
+<!-- líneas de las páginas -->
+<g stroke="#8b8067" stroke-width="2" opacity=".45">
+ <path d="M505 330Q548 282 592 262"/>
+ <path d="M515 342Q565 290 620 272"/>
+ <path d="M528 349Q583 299 646 285"/>
+</g>
+
+</g>
+
+<!-- ==================== MARCADOR ==================== -->
+<path d="M452 615L485 622L493 716L470 692L447 719Z"
+      fill="url(#cyan)" stroke="#00eaff" stroke-width="4" filter="url(#glow)"/>
+
+<path d="M470 711L486 728L470 745L454 728Z"
+      fill="url(#gem)" stroke="url(#gold)" stroke-width="4"/>
+
+<!-- protector inferior derecho -->
+<path d="M704 558L741 565L736 596L703 588Z" fill="url(#gold)"/>
+<circle cx="727" cy="575" r="5" fill="#fff0a0"/>
+
+</g>
+
+<!-- ========================= DESTELLOS ========================= -->
+<g stroke="#fff" stroke-linecap="round" filter="url(#glow)">
+ <path d="M150 365V405M130 385H170" stroke-width="3"/>
+ <path d="M755 325V365M735 345H775" stroke-width="3"/>
+ <path d="M330 165V205M310 185H350" stroke-width="3"/>
+ <path d="M610 130V156M597 143H623" stroke-width="2"/>
+</g>
+
+<!-- puntos energéticos -->
+<g fill="#00eaff" filter="url(#glow)">
+ <circle cx="205" cy="220" r="4"/>
+ <circle cx="700" cy="205" r="4"/>
+ <circle cx="116" cy="505" r="3"/>
+ <circle cx="790" cy="510" r="4"/>
+ <circle cx="225" cy="685" r="3"/>
+ <circle cx="710" cy="690" r="3"/>
+</g>
+
+</svg>
+</div>
+
+<script>
+/* Movimiento 3D suave con el mouse */
+const logo=document.getElementById("logo");
+
+window.addEventListener("pointermove",e=>{
+  const x=(e.clientX/window.innerWidth-.5)*2;
+  const y=(e.clientY/window.innerHeight-.5)*2;
+
+  logo.style.transform=
+    `rotateX(${y*-3.5}deg) rotateY(${x*4.5}deg)`;
+});
+
+window.addEventListener("pointerleave",()=>{
+  logo.style.transform="rotateX(0deg) rotateY(0deg)";
+});
+</script>
+
+</body>
+</html>

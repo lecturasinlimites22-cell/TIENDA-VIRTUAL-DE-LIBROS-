@@ -1,0 +1,153 @@
+:root {
+  --blue: #56d9f6;
+  --cyan: #00bbc5;
+  --ink: #f7fbff;
+  --soft: #c4d0e8;
+  --bg: #0b0d18;
+}
+
+body {
+  color: var(--ink);
+  background: radial-gradient(circle at 18% 10%, #252943 0, #131526 42%, #090a12 100%);
+}
+
+.site-nav {
+  background: #060910;
+  box-shadow: 0 1px 0 #007984, 0 10px 28px #0008;
+}
+
+.brand { color: #fff; }
+.brand span { background: linear-gradient(135deg, #007b91, #28d9f2); }
+.nav-links a { color: #d8e4f8; }
+.nav-links a:hover { color: #56e5ff; }
+
+.home-panel { padding: 8px 0 10px; }
+.eyebrow { color: #56d9f6; }
+.home-panel h1 { color: #fff; }
+.home-copy { color: #c4d0e8; }
+
+.module-card {
+  min-height: 245px;
+  border-color: #007681;
+  background: #05080e;
+  color: #fff;
+  box-shadow: 0 15px 34px #0007;
+}
+
+.module-card:hover {
+  transform: translateY(-7px);
+  border-color: #18e5e0;
+  box-shadow: 0 22px 42px #000b;
+}
+
+.card-icon {
+  width: 58px;
+  height: 58px;
+  border: 1px solid #008b95;
+  border-radius: 18px;
+  color: #fff;
+  background: #003036;
+}
+
+.module-card h2 { font-size: 1.55rem; }
+.module-card p { color: #c7d1e3; }
+.module-card b, .back-link { color: #56e5ff; }
+
+.data-panel {
+  border: 1px solid #007681;
+  background: #060911;
+  color: #fff;
+  box-shadow: 0 16px 35px #0008;
+}
+
+.data-panel p { color: #c7d1e3; }
+table { background: #060911; }
+th, td { border-bottom-color: #26364a; }
+th { color: #56e5ff; }
+td { color: #e6eefb; }
+
+button {
+  background: linear-gradient(135deg, #0093ad, #14c4d2);
+  color: #041016;
+  font-weight: 800;
+}
+
+input, select {
+  color: #f8fbff;
+  border-color: #3b6074;
+  background: #101827;
+}
+
+/* Animaciones para los controles del panel administrativo. */
+button,
+.admin-user-link,
+.module-card {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease, filter .22s ease;
+}
+
+button::before,
+.admin-user-link::before,
+.module-card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 18%, rgba(255,255,255,.35) 48%, transparent 76%);
+  transform: translateX(-125%);
+  transition: transform .55s ease;
+}
+
+button:not(:disabled) {
+  border: 1px solid rgba(91,231,255,.72);
+  background: linear-gradient(130deg, #00b4c8, #42d8ef 52%, #a855f7);
+  background-size: 180% 180%;
+  box-shadow: 0 7px 20px rgba(0,187,210,.22), inset 0 1px 0 rgba(255,255,255,.3);
+  animation: adminButtonGlow 4s ease infinite;
+}
+
+button:not(:disabled):hover,
+.admin-user-link:hover,
+.module-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  filter: brightness(1.12);
+  box-shadow: 0 13px 30px rgba(34,222,255,.32), 0 0 20px rgba(164,85,247,.25);
+}
+
+button:not(:disabled):hover::before,
+.admin-user-link:hover::before,
+.module-card:hover::before { transform: translateX(125%); }
+
+button:not(:disabled):active,
+.admin-user-link:active,
+.module-card:active { transform: translateY(-1px) scale(.98); }
+
+.logout-button {
+  border-color: #42d8ef !important;
+  color: #041016 !important;
+  background: #42d8ef !important;
+  box-shadow: 0 7px 20px rgba(66, 216, 239, 0.32) !important;
+  animation: none !important;
+}
+
+.logout-button:hover {
+  color: #041016 !important;
+  background: #42d8ef !important;
+  filter: none !important;
+}
+
+.secondary-button { background: linear-gradient(130deg, #364d68, #58708d, #7864a9) !important; }
+.danger-button { background: linear-gradient(130deg, #0ddfdb, #4478f0, #58708d) !important; }
+
+@keyframes adminButtonGlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button,
+  .admin-user-link,
+  .module-card { animation: none !important; transition: none !important; }
+}

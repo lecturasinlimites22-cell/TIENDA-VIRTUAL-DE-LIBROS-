@@ -1,0 +1,9 @@
+$kind: http-request
+method: DELETE
+url: 'http://127.0.0.1:8000/api/ventas/{{id}}'
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+order: 20528

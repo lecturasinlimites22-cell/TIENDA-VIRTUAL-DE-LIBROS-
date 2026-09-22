@@ -1,0 +1,15 @@
+{
+  "short_name": "Venta de Libros",
+  "name": "Venta de Libros",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#064a8d",
+  "background_color": "#f4f8fc"
+}

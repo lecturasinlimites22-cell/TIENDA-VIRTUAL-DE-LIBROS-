@@ -1,0 +1,29 @@
+$kind: http-request
+name: ConsultarEmpleado
+description: |-
+  ## Consultar Empleados
+
+  Retorna el listado completo de empleados registrados en el sistema.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `http://127.0.0.1:8000/api/empleados` |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Lista de empleados obtenida correctamente.
+  - **404 Not Found** – No se encontraron empleados registrados.
+url: http://127.0.0.1:8000/api/empleados
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: ""
+order: 61000

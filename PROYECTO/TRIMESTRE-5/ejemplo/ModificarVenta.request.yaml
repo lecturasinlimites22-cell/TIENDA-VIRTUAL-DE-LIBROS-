@@ -1,0 +1,51 @@
+$kind: http-request
+name: ModificarVenta
+description: |-
+  ## Modificar Venta
+
+  Actualiza los datos de una venta existente en el sistema identificada por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `PUT` |
+  | URL     | `http://127.0.0.1:8000/api/ventas/21` |
+
+  ### 📥 Body (JSON)
+  | Campo         | Tipo    | Descripción                      |
+  |---------------|---------|----------------------------------|
+  | `id_venta`    | int     | ID de la venta                   |
+  | `id_cliente`  | int     | Nuevo ID del cliente asociado    |
+  | `id_empleado` | int     | Nuevo ID del empleado asociado   |
+  | `fecha`       | string  | Nueva fecha y hora de la venta   |
+  | `total`       | decimal | Nuevo total de la venta          |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Venta actualizada correctamente.
+  - **404 Not Found** – La venta no existe.
+  - **400 Bad Request** – Datos inválidos o incompletos.
+url: http://127.0.0.1:8000/api/ventas/21
+method: PUT
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \        \"id_venta\": 21,\r
+
+    \        \"id_cliente\": null,\r
+
+    \        \"id_empleado\": null,\r
+
+    \        \"fecha\": \"2026-08-26 11:21:15\",\r
+
+    \        \"total\": \"30000.00\"\r
+
+    \    }"
+order: 20000

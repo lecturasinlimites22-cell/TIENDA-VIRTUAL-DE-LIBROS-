@@ -1,0 +1,44 @@
+$kind: http-request
+name: CrearCategoria
+description: |-
+  ## Crear Categoría
+
+  Registra una nueva categoría de libros en el sistema con su nombre y descripción.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `POST` |
+  | URL     | `http://127.0.0.1:8000/api/categorias` |
+
+  ### 📥 Body (JSON)
+  | Campo          | Tipo   | Descripción               |
+  |----------------|--------|---------------------------|
+  | `id_categoria` | int    | ID de la categoría        |
+  | `nombre`       | string | Nombre de la categoría    |
+  | `descripcion`  | string | Descripción de la categoría |
+
+  ### ✅ Respuesta esperada
+  - **201 Created** – Categoría creada correctamente.
+  - **400 Bad Request** – Datos inválidos o incompletos.
+url: http://127.0.0.1:8000/api/categorias
+method: POST
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \    \"id_categoria\": 17,\r
+
+    \    \"nombre\": \"Literatura\",\r
+
+    \    \"descripcion\": \"infantil y juvenil\"\r
+
+    }"
+order: 48000

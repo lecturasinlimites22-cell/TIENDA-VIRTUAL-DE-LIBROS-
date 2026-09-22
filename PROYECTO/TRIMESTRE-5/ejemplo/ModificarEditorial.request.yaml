@@ -1,0 +1,45 @@
+$kind: http-request
+name: ModificarEditorial
+description: |-
+  ## Modificar Editorial
+
+  Actualiza los datos de una editorial existente en el sistema identificada por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `PUT` |
+  | URL     | `http://127.0.0.1:8000/api/editoriales/17` |
+
+  ### 📥 Body (JSON)
+  | Campo          | Tipo   | Descripción                    |
+  |----------------|--------|--------------------------------|
+  | `id_editorial` | int    | ID de la editorial             |
+  | `nombre`       | string | Nuevo nombre de la editorial   |
+  | `pais`         | string | Nuevo país de origen           |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Editorial actualizada correctamente.
+  - **404 Not Found** – La editorial no existe.
+  - **400 Bad Request** – Datos inválidos o incompletos.
+url: http://127.0.0.1:8000/api/editoriales/17
+method: PUT
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \        \"id_editorial\": 17,\r
+
+    \        \"nombre\": \"Norma\",\r
+
+    \        \"pais\": \"España\"\r
+
+    \        }  "
+order: 59000

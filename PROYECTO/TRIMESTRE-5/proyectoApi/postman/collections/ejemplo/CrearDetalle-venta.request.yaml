@@ -1,0 +1,49 @@
+$kind: http-request
+description: |-
+  ## Crear Detalle de Venta
+
+  Registra un nuevo detalle de venta asociado a una venta y un libro en el sistema.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `POST` |
+  | URL     | `http://127.0.0.1:8000/api/detalles-venta` |
+
+  ### 📥 Body (JSON)
+  | Campo             | Tipo    | Descripción                    |
+  |-------------------|---------|--------------------------------|
+  | `id_detalle`      | int     | ID del detalle de venta        |
+  | `id_venta`        | int     | ID de la venta asociada        |
+  | `id_libro`        | int     | ID del libro asociado          |
+  | `cantidad`        | int     | Cantidad de libros              |
+  | `precio_unitario` | decimal | Precio unitario del libro      |
+
+  ### ✅ Respuesta esperada
+  - **201 Created** – Detalle de venta creado correctamente.
+  - **400 Bad Request** – Datos inválidos o incompletos.
+url: http://127.0.0.1:8000/api/detalles-venta
+method: POST
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: " {\r
+
+    \    \"id_detalle\": 17,\r
+
+    \    \"id_venta\": 17,\r
+
+    \    \"id_libro\": null,\r
+
+    \    \"cantidad\": 1,\r
+
+    \    \"precio_unitario\": \"90000.00\"\r
+
+    \  }"
+order: 33000

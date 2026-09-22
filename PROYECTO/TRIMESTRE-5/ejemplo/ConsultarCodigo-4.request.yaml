@@ -1,0 +1,46 @@
+$kind: http-request
+name: ConsultarCodigo
+description: |-
+  ## Consultar Pago por Código
+
+  Retorna la información de un pago específico identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `http://127.0.0.1:8000/api/pagos/16` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción             |
+  |------------|------|-------------------------|
+  | `id`       | int  | ID del pago a consultar |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Pago encontrado correctamente.
+  - **404 Not Found** – El pago no existe.
+url: http://127.0.0.1:8000/api/pagos/16
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \        \"id_pago\": 16,\r
+
+    \        \"id_venta\": 16,\r
+
+    \        \"id_metodo_pago\": 16,\r
+
+    \        \"monto\": \"90000.00\",\r
+
+    \        \"fecha_pago\": \"2026-08-20 14:43:09\"\r
+
+    \    }"
+order: 22000

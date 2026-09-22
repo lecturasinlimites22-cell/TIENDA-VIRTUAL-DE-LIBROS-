@@ -1,0 +1,50 @@
+$kind: http-request
+name: CrearVenta
+description: |-
+  ## Crear Venta
+
+  Registra una nueva venta en el sistema asociada a un cliente y un empleado. Requiere autenticación mediante token Bearer.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `POST` |
+  | URL     | `http://127.0.0.1:8000/api/ventas` |
+
+  ### 📥 Body (JSON)
+  | Campo         | Tipo    | Descripción                    |
+  |---------------|---------|--------------------------------|
+  | `id_cliente`  | int     | ID del cliente asociado        |
+  | `id_empleado` | int     | ID del empleado asociado       |
+  | `fecha`       | string  | Fecha y hora de la venta       |
+  | `total`       | decimal | Total de la venta              |
+
+  ### 🔐 Autenticación
+  Requiere token Bearer en el header `Authorization`.
+
+  ### ✅ Respuesta esperada
+  - **201 Created** – Venta creada correctamente.
+  - **400 Bad Request** – Datos inválidos o incompletos.
+  - **401 Unauthorized** – Token inválido o no proporcionado.
+url: 'http://127.0.0.1:8000/api/ventas'
+method: POST
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+        "id_cliente": null,
+        "id_empleado": null,
+        "fecha": "2026-08-26 11:21:15",
+        "total": "25700.00"
+    }
+order: 19000

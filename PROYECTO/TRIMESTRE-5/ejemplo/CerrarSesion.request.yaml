@@ -1,0 +1,42 @@
+$kind: http-request
+name: CerrarSesion
+description: |-
+  ## Cerrar Sesión (Logout)
+
+  Invalida el token de acceso del usuario autenticado, cerrando la sesión en el sistema.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `POST` |
+  | URL     | `http://127.0.0.1:8000/api/logout` |
+
+  ### 🔐 Autenticación
+  Requiere el token Bearer obtenido al iniciar sesión.
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Sesión cerrada exitosamente.
+  - **401 Unauthorized** – Token inválido o expirado.
+url: 'http://127.0.0.1:8000/api/logout'
+method: POST
+headers:
+  - key: Authorization
+    value: 'Bearer {{token}}'
+  - key: Content-Type
+    value: application/json
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      const res = pm.response;
+      if (res.code === 200) {
+          pm.collectionVariables.set("token", "");
+          console.log("✅ Sesión cerrada. Token eliminado.");
+      } else {
+          console.warn("⚠️ No se pudo cerrar sesión. Código:", res.code);
+      }
+    language: text/javascript
+order: 73000

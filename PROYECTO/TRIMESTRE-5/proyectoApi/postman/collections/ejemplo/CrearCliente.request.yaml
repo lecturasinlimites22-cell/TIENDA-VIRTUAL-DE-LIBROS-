@@ -1,0 +1,47 @@
+$kind: http-request
+name: CrearCliente
+description: |-
+  ## Crear Cliente
+
+  Registra un nuevo cliente en el sistema con su nombre, teléfono y dirección.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `POST` |
+  | URL     | `http://127.0.0.1:8000/api/clientes` |
+
+  ### 📥 Body (JSON)
+  | Campo        | Tipo   | Descripción              |
+  |--------------|--------|--------------------------|
+  | `id_cliente` | int    | ID del cliente           |
+  | `nombre`     | string | Nombre del cliente       |
+  | `telefono`   | string | Teléfono del cliente     |
+  | `direccion`  | string | Dirección del cliente    |
+
+  ### ✅ Respuesta esperada
+  - **201 Created** – Cliente creado correctamente.
+  - **400 Bad Request** – Datos inválidos o incompletos.
+url: http://127.0.0.1:8000/api/clientes
+method: POST
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \    \"id_cliente\": 17,\r
+
+    \    \"nombre\": \"Juan Perez\",\r
+
+    \    \"telefono\": \"31244568798\",\r
+
+    \    \"direccion\": \"Colombia\"\r
+
+    \  }"
+order: 53000

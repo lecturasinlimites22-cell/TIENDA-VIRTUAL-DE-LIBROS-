@@ -1,0 +1,46 @@
+$kind: http-request
+name: ConsultarCodigo
+description: |-
+  ## Consultar Venta por Código
+
+  Retorna la información de una venta específica identificada por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `http://127.0.0.1:8000/api/ventas/16` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción              |
+  |------------|------|--------------------------|
+  | `id`       | int  | ID de la venta a consultar |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Venta encontrada correctamente.
+  - **404 Not Found** – La venta no existe.
+url: http://127.0.0.1:8000/api/ventas/16
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \        \"id_venta\": 16,\r
+
+    \        \"id_cliente\": 16,\r
+
+    \        \"id_empleado\": 16,\r
+
+    \        \"fecha\": \"2026-08-20 14:43:09\",\r
+
+    \        \"total\": \"90000.00\"\r
+
+    \    }"
+order: 18000

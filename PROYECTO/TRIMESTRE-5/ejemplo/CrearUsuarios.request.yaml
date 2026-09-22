@@ -1,0 +1,47 @@
+$kind: http-request
+name: CrearUsuarios
+description: |-
+  ## Crear Usuario
+
+  Registra un nuevo usuario en el sistema con su nombre de usuario, contraseña y correo electrónico.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `POST` |
+  | URL     | `http://127.0.0.1:8000/api/usuarios` |
+
+  ### 📥 Body (JSON)
+  | Campo        | Tipo   | Descripción                    |
+  |--------------|--------|--------------------------------|
+  | `id_usuario` | int    | ID del usuario                 |
+  | `username`   | string | Nombre de usuario              |
+  | `password`   | string | Contraseña del usuario         |
+  | `correo`     | string | Correo electrónico del usuario |
+
+  ### ✅ Respuesta esperada
+  - **201 Created** – Usuario creado correctamente.
+  - **400 Bad Request** – Datos inválidos o incompletos.
+url: http://127.0.0.1:8000/api/usuarios
+method: POST
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: " {\r
+
+    \        \"id_usuario\": 20,\r
+
+    \        \"username\": \"user20\",\r
+
+    \        \"password\": \"123456\",\r
+
+    \        \"correo\": \"user20@gmail.com\"\r
+
+    \    }"
+order: 9000
