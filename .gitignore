@@ -1,7 +1,1 @@
-.env
-.env.*
-node_modules/
-build/
-dist/
-*.log
-TIENDA-VIRTUAL-DE-LIBROS-/
+
