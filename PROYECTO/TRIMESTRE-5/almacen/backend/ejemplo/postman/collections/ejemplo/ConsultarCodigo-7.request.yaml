@@ -1,0 +1,48 @@
+$kind: http-request
+name: ConsultarCodigo
+description: |-
+  ## Consultar Libro por Código
+
+  Retorna la información de un libro específico identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `http://127.0.0.1:8000/api/libros/16` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción              |
+  |------------|------|--------------------------|
+  | `id`       | int  | ID del libro a consultar |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Libro encontrado correctamente.
+  - **404 Not Found** – El libro no existe.
+url: http://127.0.0.1:8000/api/libros/16
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \        \"id_libro\": 16,\r
+
+    \        \"titulo\": \"Sapiens\",\r
+
+    \        \"precio\": \"75000.00\",\r
+
+    \        \"stock\": 7,\r
+
+    \        \"id_categoria\": 3,\r
+
+    \        \"id_editorial\": 16\r
+
+    \    }"
+order: 37000

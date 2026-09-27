@@ -1,0 +1,41 @@
+$kind: http-request
+name: EliminarAutor
+description: |-
+  ## Eliminar Autor
+
+  Elimina un autor del sistema identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `DELETE` |
+  | URL     | `http://127.0.0.1:8000/api/autores/17` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción              |
+  |------------|------|--------------------------|
+  | `id`       | int  | ID del autor a eliminar  |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Autor eliminado correctamente.
+  - **404 Not Found** – El autor no existe.
+url: http://127.0.0.1:8000/api/autores/17
+method: DELETE
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \        \"id_autor\": 17,\r
+
+    \        \"nombre\": \"Antoine Marie Jean-Baptiste Roger de
+    Saint-Exupéry\"\r
+
+    \    }"
+order: 45000

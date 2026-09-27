@@ -1,0 +1,46 @@
+$kind: http-request
+name: EliminarPago
+description: |-
+  ## Eliminar Pago
+
+  Elimina un pago del sistema identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `DELETE` |
+  | URL     | `http://127.0.0.1:8000/api/pagos/17` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción             |
+  |------------|------|-------------------------|
+  | `id`       | int  | ID del pago a eliminar  |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Pago eliminado correctamente.
+  - **404 Not Found** – El pago no existe.
+url: http://127.0.0.1:8000/api/pagos/17
+method: DELETE
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \        \"id_pago\": 17,\r
+
+    \        \"id_venta\": 21,\r
+
+    \        \"id_metodo_pago\": null,\r
+
+    \        \"monto\": null,\r
+
+    \        \"fecha_pago\": null\r
+
+    \    }"
+order: 25000

@@ -1,0 +1,34 @@
+$kind: http-request
+name: ConsultarCodigo
+description: |-
+  ## Consultar Usuario por Código
+
+  Retorna la información de un usuario específico identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `http://127.0.0.1:8000/api/usuarios/1` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción              |
+  |------------|------|--------------------------|
+  | `id`       | int  | ID del usuario a consultar |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Usuario encontrado correctamente.
+  - **404 Not Found** – El usuario no existe.
+url: http://127.0.0.1:8000/api/usuarios/1
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: ""
+order: 8000

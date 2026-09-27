@@ -1,0 +1,29 @@
+$kind: http-request
+name: ConsultarRol-Usuario
+description: |-
+  ## Consultar Asignaciones Rol-Usuario
+
+  Retorna el listado completo de asignaciones de roles a usuarios registradas en el sistema.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `http://127.0.0.1:8000/api/rol-usuarios` |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Lista de asignaciones rol-usuario obtenida correctamente.
+  - **404 Not Found** – No se encontraron asignaciones registradas.
+url: http://127.0.0.1:8000/api/rol-usuarios
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: ""
+order: 12000

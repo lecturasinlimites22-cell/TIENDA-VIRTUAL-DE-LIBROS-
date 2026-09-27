@@ -1,0 +1,40 @@
+$kind: http-request
+name: EliminarLibro-Autor
+description: |-
+  ## Eliminar Relación Libro-Autor
+
+  Elimina la relación entre un libro y un autor del sistema identificada por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `DELETE` |
+  | URL     | `http://127.0.0.1:8000/api/libro-autores/18` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción                              |
+  |------------|------|------------------------------------------|
+  | `id`       | int  | ID de la relación libro-autor a eliminar |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Relación libro-autor eliminada correctamente.
+  - **404 Not Found** – La relación no existe.
+url: http://127.0.0.1:8000/api/libro-autores/18
+method: DELETE
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \        \"id_libro\": 18,\r
+
+    \        \"id_autor\": 18\r
+
+    \    }"
+order: 70000

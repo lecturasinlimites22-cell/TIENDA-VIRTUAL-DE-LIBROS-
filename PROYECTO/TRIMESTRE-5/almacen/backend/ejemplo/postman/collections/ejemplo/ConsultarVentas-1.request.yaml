@@ -1,0 +1,29 @@
+$kind: http-request
+name: ConsultarVentas
+description: |-
+  ## Consultar Ventas
+
+  Retorna el listado completo de ventas registradas en el sistema.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `http://127.0.0.1:8000/api/ventas` |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Lista de ventas obtenida correctamente.
+  - **404 Not Found** – No se encontraron ventas registradas.
+url: http://127.0.0.1:8000/api/ventas
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: ""
+order: 17000

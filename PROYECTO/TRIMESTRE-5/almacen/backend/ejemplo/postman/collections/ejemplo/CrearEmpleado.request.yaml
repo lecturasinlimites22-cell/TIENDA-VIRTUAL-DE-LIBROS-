@@ -1,0 +1,53 @@
+$kind: http-request
+name: CrearEmpleado
+description: |-
+  ## Crear Empleado
+
+  Registra un nuevo empleado en el sistema con su nombre, apellido, teléfono, cargo y usuario asociado.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `POST` |
+  | URL     | `http://127.0.0.1:8000/api/empleados` |
+
+  ### 📥 Body (JSON)
+  | Campo         | Tipo   | Descripción                    |
+  |---------------|--------|--------------------------------|
+  | `id_empleado` | int    | ID del empleado                |
+  | `nombre`      | string | Nombre del empleado            |
+  | `apellido`    | string | Apellido del empleado          |
+  | `telefono`    | string | Teléfono del empleado          |
+  | `cargo`       | string | Cargo del empleado             |
+  | `id_usuario`  | int    | ID del usuario asociado        |
+
+  ### ✅ Respuesta esperada
+  - **201 Created** – Empleado creado correctamente.
+  - **400 Bad Request** – Datos inválidos o incompletos.
+url: http://127.0.0.1:8000/api/empleados
+method: POST
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \    \"id_empleado\": 19,\r
+
+    \    \"nombre\": \"Andres\",\r
+
+    \    \"apellido\": \"Felipe\",\r
+
+    \    \"telefono\": \"312457859\",\r
+
+    \    \"cargo\": \"Comprador\",\r
+
+    \    \"id_usuario\": null\r
+
+    \  }"
+order: 63000

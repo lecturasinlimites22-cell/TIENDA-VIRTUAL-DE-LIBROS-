@@ -1,0 +1,44 @@
+$kind: http-request
+name: EliminarUsuario
+description: |-
+  ## Eliminar Usuario
+
+  Elimina un usuario del sistema identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `DELETE` |
+  | URL     | `http://127.0.0.1:8000/api/usuarios/18` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción                |
+  |------------|------|----------------------------|
+  | `id`       | int  | ID del usuario a eliminar  |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Usuario eliminado correctamente.
+  - **404 Not Found** – El usuario no existe.
+url: http://127.0.0.1:8000/api/usuarios/18
+method: DELETE
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: " {\r
+
+    \        \"id_usuario\": 18,\r
+
+    \        \"username\": \"user18\",\r
+
+    \        \"password\": \"123456\",\r
+
+    \        \"correo\": \"user18@gmail.com\"\r
+
+    \    }"
+order: 11000

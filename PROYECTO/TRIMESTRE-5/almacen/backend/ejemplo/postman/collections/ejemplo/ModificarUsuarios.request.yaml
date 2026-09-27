@@ -1,0 +1,48 @@
+$kind: http-request
+name: ModificarUsuarios
+description: |-
+  ## Modificar Usuario
+
+  Actualiza los datos de un usuario existente en el sistema identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `PUT` |
+  | URL     | `http://127.0.0.1:8000/api/usuarios/20` |
+
+  ### 📥 Body (JSON)
+  | Campo        | Tipo   | Descripción                          |
+  |--------------|--------|--------------------------------------|
+  | `id_usuario` | int    | ID del usuario                       |
+  | `username`   | string | Nuevo nombre de usuario              |
+  | `password`   | string | Nueva contraseña del usuario         |
+  | `correo`     | string | Nuevo correo electrónico del usuario |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Usuario actualizado correctamente.
+  - **404 Not Found** – El usuario no existe.
+  - **400 Bad Request** – Datos inválidos o incompletos.
+url: http://127.0.0.1:8000/api/usuarios/20
+method: PUT
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \        \"id_usuario\": 20,\r
+
+    \        \"username\": \"user20\",\r
+
+    \        \"password\": \"123456\",\r
+
+    \        \"correo\": \"user20@gmail.com\"\r
+
+    \    }"
+order: 10000

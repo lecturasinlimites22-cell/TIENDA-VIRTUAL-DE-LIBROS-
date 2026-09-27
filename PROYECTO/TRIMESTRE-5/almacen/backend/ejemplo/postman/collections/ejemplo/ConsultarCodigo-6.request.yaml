@@ -1,0 +1,46 @@
+$kind: http-request
+name: ConsultarCodigo
+description: |-
+  ## Consultar Detalle de Venta por Código
+
+  Retorna la información de un detalle de venta específico identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `http://127.0.0.1:8000/api/detalles-venta/16` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción                      |
+  |------------|------|----------------------------------|
+  | `id`       | int  | ID del detalle de venta a consultar |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Detalle de venta encontrado correctamente.
+  - **404 Not Found** – El detalle de venta no existe.
+url: http://127.0.0.1:8000/api/detalles-venta/16
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \        \"id_detalle\": 16,\r
+
+    \        \"id_venta\": 16,\r
+
+    \        \"id_libro\": 16,\r
+
+    \        \"cantidad\": 1,\r
+
+    \        \"precio_unitario\": \"90000.00\"\r
+
+    \    }"
+order: 32000

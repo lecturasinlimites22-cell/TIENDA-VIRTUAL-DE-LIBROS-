@@ -108,6 +108,58 @@ router.post('/login', async (req, res) => {
   }
 });
 
+router.post('/register', async (req, res) => {
+  const origin = req.get('origin');
+  if (origin && !['http://localhost:5173', 'http://127.0.0.1:5173'].includes(origin)) {
+    return res.status(403).json({ ok: false, message: 'El registro solo está permitido desde el frontend de usuarios' });
+  }
+  const { username, password, correo, name, phone, city } = req.body ?? {};
+  const normalizedUsername = typeof username === 'string' ? username.trim() : '';
+  const normalizedEmail = typeof correo === 'string' ? correo.trim() : '';
+
+  if (!/^[A-Za-z0-9._-]+$/.test(normalizedUsername) || password?.length < 6 || !/^\S+@\S+\.\S+$/.test(normalizedEmail)) {
+    return res.status(400).json({ ok: false, message: 'Ingresa un usuario válido, un correo válido y una contraseña de mínimo 6 caracteres' });
+  }
+
+  const connection = await pool.getConnection();
+  try {
+    const passwordHash = await bcrypt.hash(password, 10);
+    await connection.beginTransaction();
+    const [result] = await connection.execute(
+      'INSERT INTO usuario (username, password, correo) VALUES (?, ?, ?)',
+      [normalizedUsername, passwordHash, normalizedEmail]
+    );
+    const [roles] = await connection.execute(
+      "SELECT id_rol FROM rol WHERE LOWER(nombre) IN ('usuario', 'user') ORDER BY id_rol LIMIT 1"
+    );
+    if (!roles.length) {
+      const roleError = new Error('No existe el rol Usuario en la base de datos');
+      roleError.code = 'ROLE_NOT_FOUND';
+      throw roleError;
+    }
+    await connection.execute(
+      'INSERT INTO rol_usuario (id_rol, id_usuario) VALUES (?, ?)',
+      [roles[0].id_rol, result.insertId]
+    );
+    if (typeof name === 'string' && name.trim()) {
+      await connection.execute(
+        'INSERT INTO cliente (nombre, telefono, direccion) VALUES (?, ?, ?)',
+        [name.trim(), String(phone || '').trim(), String(city || '').trim()]
+      );
+    }
+    await connection.commit();
+    return res.status(201).json({ ok: true, message: 'Usuario registrado correctamente', id_usuario: result.insertId });
+  } catch (error) {
+    await connection.rollback();
+    if (error.code === 'ER_DUP_ENTRY') return res.status(409).json({ ok: false, message: 'El usuario o correo ya está registrado' });
+    if (error.code === 'ROLE_NOT_FOUND') return res.status(500).json({ ok: false, message: error.message });
+    console.error('Error de registro:', error.code || error.message);
+    return res.status(503).json({ ok: false, message: 'No fue posible registrar el usuario' });
+  } finally {
+    connection.release();
+  }
+});
+
 router.get('/me', requireAuth, (req, res) => {
   res.json({ ok: true, usuario: req.usuario });
 });

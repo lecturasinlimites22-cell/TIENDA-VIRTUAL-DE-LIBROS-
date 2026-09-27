@@ -1,0 +1,48 @@
+$kind: http-request
+name: EliminarLibro
+description: |-
+  ## Eliminar Libro
+
+  Elimina un libro del sistema identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `DELETE` |
+  | URL     | `http://127.0.0.1:8000/api/libros/17` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción              |
+  |------------|------|--------------------------|
+  | `id`       | int  | ID del libro a eliminar  |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Libro eliminado correctamente.
+  - **404 Not Found** – El libro no existe.
+url: http://127.0.0.1:8000/api/libros/17
+method: DELETE
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \        \"id_libro\": 17,\r
+
+    \        \"titulo\": \"El principito\",\r
+
+    \        \"precio\": \"75000.00\",\r
+
+    \        \"stock\": 25,\r
+
+    \        \"id_categoria\": null,\r
+
+    \        \"id_editorial\": null\r
+
+    \    }\r\n"
+order: 40000

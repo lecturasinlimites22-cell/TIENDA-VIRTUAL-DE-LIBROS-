@@ -1,0 +1,45 @@
+$kind: http-request
+name: ModificarRoles
+description: |-
+  ## Modificar Rol
+
+  Actualiza los datos de un rol existente en el sistema identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `PUT` |
+  | URL     | `http://127.0.0.1:8000/api/roles/13` |
+
+  ### 📥 Body (JSON)
+  | Campo          | Tipo   | Descripción                  |
+  |----------------|--------|------------------------------|
+  | `id_rol`       | string | ID del rol                   |
+  | `nombre`       | string | Nuevo nombre del rol         |
+  | `descripcion`  | string | Nueva descripción del rol    |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Rol actualizado correctamente.
+  - **404 Not Found** – El rol no existe.
+  - **400 Bad Request** – Datos inválidos o incompletos.
+url: http://127.0.0.1:8000/api/roles/13
+method: PUT
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \    \"id_rol\":\"13\",\r
+
+    \    \"nombre\":\"usuario\",\r
+
+    \    \"descripcion\":\"comprador\"\r
+
+    }\r\n"
+order: 5000

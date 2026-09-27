@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { HashRouter, Link, Navigate, Route, Routes, useParams } from 'react-router-dom';
 import Navbar from './components/navbar';
 import Modulo from './pages/modulo';
+import { apiFetch } from './api';
 import './App.css';
 import './admin-theme.css';
 
@@ -54,6 +55,8 @@ function AdminSession({ children }) {
   const [view, setView] = useState('loading');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [registering, setRegistering] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -81,15 +84,16 @@ function AdminSession({ children }) {
     event.preventDefault();
     setError('');
     try {
-      const response = await fetch('http://localhost:5000/api/login', {
+      const response = await apiFetch('/login', {
         method: 'POST',
-        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: username.trim(), password }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.message || 'Usuario o contraseña incorrectos.');
-      if (String(result.usuario?.rol || '').toLowerCase() !== 'administrador') {
+      const user = result.data?.user;
+      const isAdmin = user?.roles?.some((role) => String(role.nombre).toLowerCase() === 'administrador');
+      if (!isAdmin) {
         throw new Error('Esta cuenta no tiene acceso al panel administrativo.');
       }
       sessionStorage.setItem('admin-session', 'admin-local-session');
@@ -99,15 +103,29 @@ function AdminSession({ children }) {
       setError(loginError.message || 'No fue posible iniciar sesión.');
     }
   };
+  const register = async (event) => {
+    event.preventDefault();
+    setError('');
+    try {
+      const response = await apiFetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: username.trim(), password, correo: email.trim() }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || 'No fue posible registrar el usuario.');
+      setRegistering(false);
+      setPassword('');
+      setEmail('');
+      setError('Usuario registrado. Ya puede iniciar sesión cuando un administrador le asigne acceso.');
+    } catch (registerError) {
+      setError(registerError.message || 'No fue posible registrar el usuario.');
+    }
+  };
   const logout = async () => {
     try {
-      await fetch('http://localhost:5000/api/logout', {
+      await apiFetch('/logout', {
         method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(sessionStorage.getItem('admin-token') ? { Authorization: `Bearer ${sessionStorage.getItem('admin-token')}` } : {}),
-        },
       });
     } catch (logoutError) {
       console.warn('No fue posible cerrar la sesión en la API:', logoutError);
@@ -141,8 +159,8 @@ function AdminSession({ children }) {
       <iframe className="login-logo" src="/logo%20.html" title="Logo Venta de Libros Digital" />
       <p className="eyebrow">PANEL ADMINISTRATIVO</p>
       <h1>Iniciar sesión</h1>
-      <p>Ingresa como administrador para acceder a los módulos.</p>
-      <form className="admin-login-form" onSubmit={login}>
+      <p>{registering ? 'Registra una cuenta para que aparezca en el panel administrador.' : 'Ingresa como administrador para acceder a los módulos.'}</p>
+      <form className="admin-login-form" onSubmit={registering ? register : login}>
         <label>
           Usuario
           <input
@@ -164,8 +182,14 @@ function AdminSession({ children }) {
             required
           />
         </label>
+        {registering && (
+          <label>
+            Correo
+            <input type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="correo@ejemplo.com" required />
+          </label>
+        )}
         {error && <p className="login-error" role="alert">{error}</p>}
-        <button type="submit">Iniciar sesión como administrador</button>
+        <button type="submit">{registering ? 'Registrar usuario' : 'Iniciar sesión como administrador'}</button>
       </form>
     </main>
   );

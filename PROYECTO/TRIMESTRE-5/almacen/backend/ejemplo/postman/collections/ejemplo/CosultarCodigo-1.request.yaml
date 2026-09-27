@@ -1,0 +1,40 @@
+$kind: http-request
+name: CosultarCodigo
+description: |-
+  ## Consultar Relación Libro-Autor por Código
+
+  Retorna la información de una relación libro-autor específica identificada por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `http://127.0.0.1:8000/api/libro-autores/16` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción                          |
+  |------------|------|--------------------------------------|
+  | `id`       | int  | ID de la relación libro-autor a consultar |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Relación libro-autor encontrada correctamente.
+  - **404 Not Found** – La relación no existe.
+url: http://127.0.0.1:8000/api/libro-autores/16
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \        \"id_libro\": 16,\r
+
+    \        \"id_autor\": 16\r
+
+    \    }"
+order: 67000

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { apiFetch, API_URL } from '../api';
 
 const labels = { autor: 'Autores', categoria: 'Categorías', cliente: 'Clientes', detalle_venta: 'Detalle de ventas', editorial: 'Editoriales', empleado: 'Empleados', libro: 'Libros', libro_autor: 'Libros y autores', metodo_pago: 'Métodos de pago', pago: 'Pagos', rol: 'Roles', rol_usuario: 'Roles de usuario', usuario: 'Usuarios', venta: 'Ventas' };
 const primaryKeys = { autor: ['id_autor'], categoria: ['id_categoria'], cliente: ['id_cliente'], detalle_venta: ['id_detalle'], editorial: ['id_editorial'], empleado: ['id_empleado'], libro: ['id_libro'], libro_autor: ['id_libro', 'id_autor'], metodo_pago: ['id_metodo_pago'], pago: ['id_pago'], rol: ['id_rol'], rol_usuario: ['id_rol', 'id_usuario'], usuario: ['id_usuario'], venta: ['id_venta'] };
@@ -24,8 +25,11 @@ const numberPattern = /^\d+$/;
 const cityOptions = ['Bogotá', 'Medellín', 'Cali', 'Barranquilla', 'Bucaramanga', 'Pereira', 'Manizales', 'Cartagena', 'Ibagué', 'Tunja'];
 const paymentMethodOptions = ['Tarjeta', 'Transferencia', 'PSE', 'Efectivo', 'Billetera digital', 'Nequi', 'Daviplata', 'PayPal', 'Consignación bancaria', 'Crédito de tienda'];
 const countryOptions = ['Colombia', 'Argentina', 'Brasil', 'Chile', 'Ecuador', 'España', 'Estados Unidos', 'México', 'Perú', 'Francia', 'Reino Unido'];
-const apiUrl = 'http://localhost:5000/api';
+const apiUrl = API_URL;
 const noRelations = {};
+const apiResources = { autor: 'autores', categoria: 'categorias', cliente: 'clientes', detalle_venta: 'detalles-venta', editorial: 'editoriales', empleado: 'empleados', libro: 'libros', libro_autor: 'libro-autores', metodo_pago: 'metodos-pago', pago: 'pagos', rol: 'roles', rol_usuario: 'rol-usuarios', usuario: 'usuarios', venta: 'ventas' };
+const resourcePath = (module) => apiResources[module] || module;
+const recordsFrom = (payload) => Array.isArray(payload) ? payload : [];
 
 const formatMoney = (value) => {
   if (value === null || value === undefined || value === '') return '';
@@ -161,14 +165,14 @@ function Modulo() {
     setForm({});
     setMessage('');
 
-    fetch(`${apiUrl}/${modulo}?limit=100`)
+    apiFetch(`/${resourcePath(modulo)}`)
       .then((response) => {
         if (!response.ok) throw new Error('No se pudo consultar la base de datos');
         return response.json();
       })
       .then((payload) => {
-        if (!Array.isArray(payload[modulo])) throw new Error('La respuesta de la base de datos no contiene registros válidos');
-        const rows = payload[modulo];
+        const rows = recordsFrom(payload);
+        if (!rows.length && payload?.message) throw new Error(payload.message);
         if (!active) return;
         setData(rows);
         putRows(modulo, rows);
@@ -188,10 +192,10 @@ function Modulo() {
     }
 
     Promise.all(tables.map(async (table) => {
-      const response = await fetch(`${apiUrl}/${table}?limit=100`);
+      const response = await apiFetch(`/${resourcePath(table)}`);
       if (!response.ok) throw new Error(`No se pudo consultar ${table}`);
       const payload = await response.json();
-      return [table, Array.isArray(payload[table]) ? payload[table] : []];
+      return [table, recordsFrom(payload)];
     }))
       .then((entries) => {
         if (active) setReferenceRows(Object.fromEntries(entries));
@@ -205,7 +209,7 @@ function Modulo() {
   const references = useMemo(() => Object.fromEntries(Object.entries(relationMap).map(([field, table]) => [field, referenceRows[table] || getRows(table)])), [relationMap, referenceRows]);
   const displayFields = moduleFields.filter((field) => field !== 'password');
   const rowId = (row) => keys.map((key) => String(row[key])).join(':');
-  const recordUrl = (row) => `${apiUrl}/${modulo}/${keys.map((key) => encodeURIComponent(row[key])).join('/')}`;
+  const recordUrl = (row) => `${apiUrl}/${resourcePath(modulo)}/${keys.map((key) => encodeURIComponent(row[key])).join('/')}`;
   const saveRows = (next) => { setData(next); putRows(modulo, next); };
   const displayValue = (field, row) => {
     if (moneyFields.has(field)) return formatMoney(row[field]);
@@ -268,35 +272,30 @@ function Modulo() {
         record[field] = Number(record[field]);
       }
     });
-    const token = sessionStorage.getItem('admin-token');
     try {
       const isNew = editing === 'new';
-      const targetUrl = isNew ? `${apiUrl}/${modulo}` : recordUrl(editing);
-      const response = await fetch(targetUrl, {
+      const targetUrl = isNew ? `${apiUrl}/${resourcePath(modulo)}` : recordUrl(editing);
+      const response = await apiFetch(targetUrl.replace(apiUrl, ''), {
         method: isNew ? 'POST' : 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        credentials: 'include',
         body: JSON.stringify(record),
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.error || 'No fue posible guardar el registro en la base de datos.');
-      const refreshed = await fetch(`${apiUrl}/${modulo}?limit=100`);
+      const refreshed = await apiFetch(`/${resourcePath(modulo)}`);
       const payload = await refreshed.json();
-      const rows = Array.isArray(payload[modulo]) ? payload[modulo] : [];
+      const rows = recordsFrom(payload);
       saveRows(rows);
       setMessage(isNew ? 'Registro creado y sincronizado con la tienda.' : 'Registro actualizado y sincronizado con la tienda.');
       setEditing(null);
     } catch (saveError) {
+      const nextRecord = { ...record };
+      if (keys.length === 1) {
+        const key = keys[0];
+        nextRecord[key] = Math.max(0, ...data.map((row) => Number(row[key]) || 0)) + 1;
+      }
       const fallback = editing === 'new'
-        ? (() => {
-          const nextRecord = { ...record };
-          if (keys.length === 1) { const key = keys[0]; nextRecord[key] = Math.max(0, ...data.map((row) => Number(row[key]) || 0)) + 1; }
-          return [...data, nextRecord];
-        })()
-        : data.map((row) => rowId(row) === rowId(editing) ? { ...row, ...record } : row);
+        ? [...data, nextRecord]
+        : data.map((row) => rowId(row) === rowId(editing) ? { ...row, ...nextRecord } : row);
       saveRows(fallback);
       setMessage(`Guardado localmente: ${saveError.message}`);
       setEditing(null);
@@ -306,12 +305,9 @@ function Modulo() {
     if (!window.confirm('¿Deseas eliminar este registro de la base de datos?')) return;
     setMessage('');
     try {
-      const token = sessionStorage.getItem('admin-token');
-      if (!token) throw new Error('Tu sesión administrativa expiró. Inicia sesión nuevamente para eliminar registros.');
-      const response = await fetch(recordUrl(row), {
+      if (!sessionStorage.getItem('admin-token')) throw new Error('Tu sesión administrativa expiró. Inicia sesión nuevamente para eliminar registros.');
+      const response = await apiFetch(recordUrl(row).replace(apiUrl, ''), {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-        credentials: 'include',
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.error || result.message || 'No fue posible eliminar el registro.');

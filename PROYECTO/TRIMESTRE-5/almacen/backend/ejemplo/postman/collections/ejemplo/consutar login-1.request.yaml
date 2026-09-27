@@ -1,0 +1,37 @@
+$kind: http-request
+name: consutar login
+description: |-
+  ## Consultar Estado del Login
+
+  Verifica el estado del endpoint de autenticación en el sistema.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `URL pendiente de configurar` |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Endpoint de login disponible.
+  - **404 Not Found** – El endpoint no está configurado.
+url: http://127.0.0.1:8000/api/me
+method: GET
+headers:
+  Authorization: Bearer {{token}}
+body:
+  type: json
+  content: ""
+scripts:
+  - type: afterResponse
+    code: |-
+      const res = pm.response.json();
+      if (res && res.token) {
+          pm.collectionVariables.set("token", res.token);
+          console.log("✅ Token JWT guardado en {{token}}");
+      } else {
+          console.warn("⚠️ No se encontró token en la respuesta:", JSON.stringify(res));
+      }
+    language: text/javascript
+order: 71000

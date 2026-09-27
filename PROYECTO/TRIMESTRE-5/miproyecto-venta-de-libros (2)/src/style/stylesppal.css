@@ -1667,6 +1667,44 @@ button:disabled{
     min-height:52px;
 }
 
+.forgot-password-link{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    min-height:46px;
+    margin-top:.9rem;
+    padding:.7rem 1rem;
+    border:1px solid transparent;
+    border-radius:14px;
+    background:linear-gradient(110deg,#00e5ff 0%,#8060ff 52%,#e526f2 100%);
+    color:#101225;
+    font:inherit;
+    font-weight:700;
+    text-align:center;
+    text-decoration:none;
+    cursor:pointer;
+    box-shadow:0 8px 22px rgba(0,229,255,.18);
+    transition:background .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+.forgot-password-link:hover{
+    border-color:rgba(255,255,255,.4);
+    background:linear-gradient(110deg,#35f0ff 0%,#967cff 52%,#f34afa 100%);
+    color:#080b16;
+    box-shadow:0 11px 26px rgba(0,229,255,.28);
+    transform:translateY(-1px);
+}
+
+.forgot-password-link:focus-visible{
+    outline:3px solid rgba(0,255,255,.55);
+    outline-offset:3px;
+}
+
+.forgot-password-link:active{
+    transform:translateY(0);
+}
+
 .auth-feedback{
     margin-top:1rem;
     padding:.85rem 1rem;
@@ -1693,6 +1731,53 @@ button:disabled{
 
 .login-helper a{
     color:var(--cyan);
+}
+
+.profile-action-buttons{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:center;
+    gap:1rem;
+    margin:1rem 0 1.5rem;
+}
+
+.profile-edit-button{
+    min-height:48px;
+    margin:0;
+    padding:.75rem 1.25rem;
+    border:1px solid transparent;
+    border-radius:14px;
+    background:linear-gradient(110deg,#00e5ff 0%,#8060ff 52%,#e526f2 100%);
+    color:#101225;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 8px 22px rgba(0,229,255,.18);
+    transition:transform .2s ease, box-shadow .2s ease;
+}
+
+.profile-edit-button:hover{
+    transform:translateY(-1px);
+    box-shadow:0 11px 26px rgba(0,229,255,.28);
+}
+
+.profile-edit-actions{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    align-items:center;
+    gap:.75rem;
+}
+.password-change-section{
+    width:min(560px, 100%);
+    margin:1rem auto 1.5rem;
+}
+
+.password-change-section h2{
+    margin-bottom:1rem;
+}
+
+.password-change-form{
+    max-width:100%;
 }
 
 .logout-success-shell{
@@ -1805,6 +1890,7 @@ button:disabled{
 .menu-card,
 .book-card,
 .stat-box{
+    min-width:0;
     border-radius:20px;
     padding:1.35rem;
 }
@@ -1820,6 +1906,16 @@ button:disabled{
 
 .menu-card:hover{
     color:white;
+}
+
+.contact-email{
+    color:var(--cyan);
+    overflow-wrap:anywhere;
+    text-decoration:none;
+}
+
+.contact-email:hover{
+    text-decoration:underline;
 }
 
 .menu-icon{
@@ -2340,8 +2436,12 @@ button:disabled{
 }
 
 .stat-box strong{
+    display:block;
+    min-width:0;
+    overflow-wrap:anywhere;
     color:var(--cyan);
     font-size:1.35rem;
+    line-height:1.15;
 }
 
 .stat-box .login-time{
@@ -2515,3 +2615,5 @@ button:disabled{
     background:linear-gradient(115deg, #ff0052, #ff7a8d, #be0dff, #ff0052);
     background-size:260% 260%;
 }
+
+

@@ -1,0 +1,29 @@
+$kind: http-request
+name: ConsutarLibro-Autor
+description: |-
+  ## Consultar Relaciones Libro-Autor
+
+  Retorna el listado completo de relaciones entre libros y autores registradas en el sistema.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `http://127.0.0.1:8000/api/libro-autores` |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Lista de relaciones libro-autor obtenida correctamente.
+  - **404 Not Found** – No se encontraron relaciones registradas.
+url: http://127.0.0.1:8000/api/libro-autores
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: ""
+order: 66000

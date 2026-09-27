@@ -1,0 +1,41 @@
+$kind: http-request
+name: CrearRol-Usuario
+description: |-
+  ## Crear Asignación Rol-Usuario
+
+  Asigna un rol a un usuario en el sistema.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `POST` |
+  | URL     | `http://127.0.0.1:8000/api/rol-usuarios` |
+
+  ### 📥 Body (JSON)
+  | Campo        | Tipo   | Descripción                    |
+  |--------------|--------|--------------------------------|
+  | `id_rol`     | string | ID del rol a asignar           |
+  | `id_usuario` | int    | ID del usuario al que se asigna |
+
+  ### ✅ Respuesta esperada
+  - **201 Created** – Asignación rol-usuario creada correctamente.
+  - **400 Bad Request** – Datos inválidos o incompletos.
+url: http://127.0.0.1:8000/api/rol-usuarios
+method: POST
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \    \"id_rol\": \"13\",\r
+
+    \    \"id_usuario\": 20\r
+
+    }"
+order: 14000

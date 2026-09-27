@@ -1,0 +1,44 @@
+$kind: http-request
+name: EliminarCliente
+description: |-
+  ## Eliminar Cliente
+
+  Elimina un cliente del sistema identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `DELETE` |
+  | URL     | `http://127.0.0.1:8000/api/clientes/17` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción                |
+  |------------|------|----------------------------|
+  | `id`       | int  | ID del cliente a eliminar  |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Cliente eliminado correctamente.
+  - **404 Not Found** – El cliente no existe.
+url: http://127.0.0.1:8000/api/clientes/17
+method: DELETE
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \    \"id_cliente\": 17,\r
+
+    \    \"nombre\": \"Juan Perez\",\r
+
+    \    \"telefono\": \"31244568798\",\r
+
+    \    \"direccion\": \"Cordoba\"\r
+
+    \  }"
+order: 55000

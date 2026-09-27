@@ -1,0 +1,48 @@
+$kind: http-request
+name: ConsultarCodigo
+description: |-
+  ## Consultar Empleado por Código
+
+  Retorna la información de un empleado específico identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `http://127.0.0.1:8000/api/empleados/16` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción                |
+  |------------|------|----------------------------|
+  | `id`       | int  | ID del empleado a consultar |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Empleado encontrado correctamente.
+  - **404 Not Found** – El empleado no existe.
+url: http://127.0.0.1:8000/api/empleados/16
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \    \"id_empleado\": 16,\r
+
+    \    \"nombre\": \"Julian\",\r
+
+    \    \"apellido\": \"Vargas\",\r
+
+    \    \"telefono\": \"3216666666\",\r
+
+    \    \"cargo\": \"Cajero\",\r
+
+    \    \"id_usuario\": 16\r
+
+    \  }"
+order: 62000

@@ -1,0 +1,48 @@
+$kind: http-request
+name: ModificarCliente
+description: |-
+  ## Modificar Cliente
+
+  Actualiza los datos de un cliente existente en el sistema identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `PUT` |
+  | URL     | `http://127.0.0.1:8000/api/clientes/17` |
+
+  ### 📥 Body (JSON)
+  | Campo        | Tipo   | Descripción                    |
+  |--------------|--------|--------------------------------|
+  | `id_cliente` | int    | ID del cliente                 |
+  | `nombre`     | string | Nuevo nombre del cliente       |
+  | `telefono`   | string | Nuevo teléfono del cliente     |
+  | `direccion`  | string | Nueva dirección del cliente    |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Cliente actualizado correctamente.
+  - **404 Not Found** – El cliente no existe.
+  - **400 Bad Request** – Datos inválidos o incompletos.
+url: http://127.0.0.1:8000/api/clientes/17
+method: PUT
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \    \"id_cliente\": 17,\r
+
+    \    \"nombre\": \"Juan Perez\",\r
+
+    \    \"telefono\": \"31244568798\",\r
+
+    \    \"direccion\": \"Cordoba\"\r
+
+    \  }"
+order: 54000

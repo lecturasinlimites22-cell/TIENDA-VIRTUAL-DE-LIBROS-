@@ -1,0 +1,44 @@
+$kind: http-request
+name: ConsultarCodigo
+description: |-
+  ## Consultar Cliente por Código
+
+  Retorna la información de un cliente específico identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `http://127.0.0.1:8000/api/clientes/16` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción                |
+  |------------|------|----------------------------|
+  | `id`       | int  | ID del cliente a consultar |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Cliente encontrado correctamente.
+  - **404 Not Found** – El cliente no existe.
+url: http://127.0.0.1:8000/api/clientes/16
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \    \"id_cliente\": 16,\r
+
+    \    \"nombre\": \"Mateo Vargas\",\r
+
+    \    \"telefono\": \"3156666666\",\r
+
+    \    \"direccion\": \"Popayán\"\r
+
+    \  }"
+order: 52000

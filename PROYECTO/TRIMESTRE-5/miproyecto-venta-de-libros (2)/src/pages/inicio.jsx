@@ -14,6 +14,7 @@ const cuentasBase = [
         phone: "3000000000",
         city: "Bogota",
     },
+   
     {
         role: "Administrador",
         name: "Admin Libreria",
@@ -46,23 +47,30 @@ function normalizeRole(role) {
     return value ? value.charAt(0).toUpperCase() + value.slice(1) : "Usuario";
 }
 
+function getApiRows(data, resource) {
+    if (Array.isArray(data)) return data;
+    return Array.isArray(data?.[resource]) ? data[resource] : [];
+}
+
+function mapApiAccount(account) {
+    return {
+        ...account,
+        id: account.id || account.id_usuario,
+        role: normalizeRole(account.role),
+        name: account.name || account.nombre || account.username,
+        username: account.username,
+        email: account.email || account.correo,
+        phone: account.phone || account.telefono || "",
+        city: account.city || account.ciudad || account.direccion || "",
+    };
+}
+
 function getBookDescription(book) {
     if (book.descripcion || book.description) {
         return book.descripcion || book.description;
     }
 
     return `Una lectura de ${String(book.categoria || "literatura").toLowerCase()} publicada por ${book.editorial || "nuestra libreria"}. Conoce la historia, las ideas y los personajes de ${book.titulo}.`;
-}
-
-function BookIcon() {
-    return (
-        <svg viewBox="0 0 64 64" aria-hidden="true">
-            <path d="M14 12h34a4 4 0 0 1 4 4v36a4 4 0 0 1-4 4H14a4 4 0 0 1-4-4V16a4 4 0 0 1 4-4Z" fill="none" stroke="currentColor" strokeWidth="4" strokeLinejoin="round" />
-            <path d="M20 18h24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
-            <path d="M20 26h24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
-            <path d="M20 34h24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
-        </svg>
-    );
 }
 
 import portadas from '../assets/portadas';
@@ -144,8 +152,8 @@ function getAuthToken() {
 }
 
 const STORAGE_PREFIX = "bookstore-";
-const ADMIN_APP_URL = "http://localhost:3000";
-const API_BASE = "http://localhost:5000/api";
+const ADMIN_APP_URL = "http://localhost:3000/#";
+const API_BASE = "http://127.0.0.1:8001/api";
 
 function getStorageKey(key) {
     return `${STORAGE_PREFIX}${key}`;
@@ -232,6 +240,9 @@ function mergeApiBooks(data) {
 
 function Inicio({ initialScreen = "home", initialAuthMode = "login" }) {
     const [authMode, setAuthMode] = useState(initialAuthMode);
+    const [isRecoveringPassword, setIsRecoveringPassword] = useState(false);
+    const [isEditingProfile, setIsEditingProfile] = useState(false);
+    const [isChangingPassword, setIsChangingPassword] = useState(false);
     const [screen, setScreen] = useState(initialScreen);
     const [menuAbierto, setMenuAbierto] = useState(false);
 
@@ -258,14 +269,25 @@ function Inicio({ initialScreen = "home", initialAuthMode = "login" }) {
         async function loadApiData() {
             const endpoints = [
                 {
-                    url: `${API_BASE}/libro?limit=100`,
+                    url: `${API_BASE}/libros`,
                     setter: setBooks,
                     fallback: librosBase,
                     transform: mergeApiBooks,
                 },
-                { url: `${API_BASE}/cliente`, setter: setClientes, fallback: clientesBase },
-                { url: `${API_BASE}/empleado`, setter: setEmpleados, fallback: empleadosBase },
-                { url: `${API_BASE}/usuario`, setter: setAccounts, fallback: cuentasBase },
+                {
+                    url: `${API_BASE}/clientes`,
+                    setter: setClientes,
+                    fallback: clientesBase,
+                    transform: (data) => getApiRows(data, "cliente"),
+                },
+                { url: `${API_BASE}/empleados`, setter: setEmpleados, fallback: empleadosBase },
+                {
+                    url: `${API_BASE}/usuarios`,
+                    setter: setAccounts,
+                    fallback: cuentasBase,
+                    transform: (data) => getApiRows(data, "usuario").map(mapApiAccount),
+                    mergeWithCurrent: true,
+                },
             ];
 
             const results = await Promise.all(
@@ -294,8 +316,9 @@ function Inicio({ initialScreen = "home", initialAuthMode = "login" }) {
                             data: transform ? transform(data) : data,
                         };
                     } catch (error) {
-                        // La API puede no estar iniciada en el puerto esperado.
-                        // En ese caso usamos los datos locales del proyecto.
+                        // La API puede no estar iniciada o no estar disponible en este momento.
+                        // En ese caso se usa el contenido local del proyecto sin mostrar una alerta.
+                        console.warn("API no disponible, usando datos locales.", error);
                         return {
                             success: false,
                             error,
@@ -305,9 +328,24 @@ function Inicio({ initialScreen = "home", initialAuthMode = "login" }) {
             );
 
             results.forEach((result, index) => {
-                const { setter, fallback } = endpoints[index];
-                if (result.success && Array.isArray(result.data) && result.data.length) {
-                    setter(result.data);
+                const { setter, fallback, mergeWithCurrent } = endpoints[index];
+                if (result.success && Array.isArray(result.data) && (result.data.length || mergeWithCurrent)) {
+                    if (mergeWithCurrent) {
+                        setter((current) => {
+                            const mergedAccounts = [...result.data];
+                            current.forEach((localAccount) => {
+                                const existsInApi = result.data.some(
+                                    (apiAccount) =>
+                                        normalizeValue(apiAccount.username) === normalizeValue(localAccount.username) ||
+                                        normalizeValue(apiAccount.email) === normalizeValue(localAccount.email)
+                                );
+                                if (!existsInApi) mergedAccounts.push(localAccount);
+                            });
+                            return mergedAccounts;
+                        });
+                    } else {
+                        setter(result.data);
+                    }
                 } else {
                     setter(fallback);
                 }
@@ -666,6 +704,231 @@ function logout() {
     saveToStorage("session", null);
     saveToStorage("token", null);
 }
+
+    async function handleProfileUpdate(event) {
+        event.preventDefault();
+        if (!session?.id || !session?.token) {
+            setFeedback("La sesion no tiene un token valido. Cierra sesion e inicia nuevamente.");
+            return;
+        }
+
+        const form = new FormData(event.currentTarget);
+        const profile = {
+            username: String(form.get("username") || "").trim(),
+            correo: String(form.get("email") || "").trim(),
+            nombre: String(form.get("name") || "").trim(),
+            telefono: String(form.get("phone") || "").trim(),
+            direccion: String(form.get("city") || "").trim(),
+        };
+        if (!/^\d{7,15}$/.test(profile.telefono)) {
+            setFeedback("El celular debe tener entre 7 y 15 digitos.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE}/perfil`, {
+                method: "PUT",
+                credentials: "include",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${session.token}`,
+                },
+                body: JSON.stringify(profile),
+            });
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                const firstValidationError = Object.values(result.errors || {})[0]?.[0];
+                throw new Error(firstValidationError || result.message || `Laravel respondio HTTP ${response.status}.`);
+            }
+
+            const updatedSession = mapApiAccount({
+                ...(result.usuario || profile),
+                id_usuario: session.id,
+                role: session.role,
+                token: session.token,
+            });
+            setSession(updatedSession);
+            saveToStorage("session", updatedSession);
+            const nextAccounts = accounts.map((item) => item.id === session.id ? updatedSession : item);
+            setAccounts(nextAccounts);
+            saveToStorage("accounts", nextAccounts);
+            setClientes((current) => current.map((client) =>
+                normalizeValue(client.usuario) === normalizeValue(session.username)
+                    ? { ...client, nombre: profile.nombre, correo: profile.correo, telefono: profile.telefono, direccion: profile.direccion }
+                    : client
+            ));
+            setIsEditingProfile(false);
+            setFeedback("Tus datos se actualizaron en la base de datos.");
+        } catch (error) {
+            setFeedback(error.message || "No se pudieron guardar los datos en la base de datos.");
+        }
+    }
+    async function handlePasswordChange(event) {
+        event.preventDefault();
+        const formElement = event.currentTarget;
+        setFeedback("");
+        const form = new FormData(formElement);
+        const currentPassword = String(form.get("currentPassword") || "");
+        const newPassword = String(form.get("newPassword") || "");
+        const confirmPassword = String(form.get("confirmPassword") || "");
+
+        if (newPassword.length < 6) {
+            setFeedback("La nueva contrasena debe tener al menos 6 caracteres.");
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            setFeedback("Las nuevas contrasenas no coinciden.");
+            return;
+        }
+
+        const account = [...accounts, ...cuentasBase].find(
+            (item) =>
+                normalizeValue(item.username) === normalizeValue(session?.username) ||
+                normalizeValue(item.email) === normalizeValue(session?.email)
+        );
+        let verified = account?.password === currentPassword;
+
+        if (!verified) {
+            try {
+                const response = await fetch(`${API_BASE}/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({ username: session?.username || session?.email, password: currentPassword }),
+                });
+                verified = response.ok;
+            } catch (error) {
+                console.error("No se pudo verificar la contrasena actual", error);
+            }
+        }
+
+        if (!verified) {
+            setFeedback("La contrasena actual no es correcta.");
+            return;
+        }
+
+        const updatedSession = { ...session, password: newPassword };
+        const accountMatchesSession = (item) =>
+            normalizeValue(item.username) === normalizeValue(session?.username) ||
+            normalizeValue(item.email) === normalizeValue(session?.email);
+        const nextAccounts = accounts.some(accountMatchesSession)
+            ? accounts.map((item) => accountMatchesSession(item) ? { ...item, password: newPassword } : item)
+            : [...accounts, updatedSession];
+
+        setSession(updatedSession);
+        setAccounts(nextAccounts);
+        saveToStorage("session", updatedSession);
+        saveToStorage("accounts", nextAccounts);
+
+        let message = "Contrasena actualizada correctamente.";
+        if (session?.id) {
+            try {
+                const response = await fetch(`${API_BASE}/usuarios/${session.id}`, {
+                    method: "PUT",
+                    credentials: "include",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${session.token}`,
+                    },
+                    body: JSON.stringify({ password: newPassword }),
+                });
+                if (!response.ok) message += " Se guardo solo en este navegador; no se pudo actualizar el servidor.";
+            } catch (error) {
+                console.error("No se pudo sincronizar la contrasena con la API", error);
+                message += " Se guardo solo en este navegador; no se pudo actualizar el servidor.";
+            }
+        }
+
+        formElement.reset();
+        setIsChangingPassword(false);
+        setFeedback(message);
+    }
+
+    async function handlePasswordRecovery(event) {
+        event.preventDefault();
+        const formElement = event.currentTarget;
+        const form = new FormData(formElement);
+        const email = normalizeValue(form.get("email"));
+        const phone = String(form.get("phone") || "").replace(/\D/g, "");
+        const newPassword = String(form.get("newPassword") || "");
+        const confirmPassword = String(form.get("confirmPassword") || "");
+
+        if (newPassword.length < 6) {
+            setFeedback("La nueva contrasena debe tener al menos 6 caracteres.");
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            setFeedback("Las nuevas contrasenas no coinciden.");
+            return;
+        }
+
+        const matchesRecoveryDetails = (item) =>
+            normalizeValue(item.email || item.correo) === email &&
+            String(item.phone || item.telefono || "").replace(/\D/g, "") === phone;
+        const localAccount = [...accounts, ...cuentasBase].find(matchesRecoveryDetails);
+        let account = null;
+        let databaseAccount;
+
+        try {
+            const response = await fetch(`${API_BASE}/usuarios`);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const apiAccounts = getApiRows(await response.json(), "usuario").map(mapApiAccount);
+            databaseAccount = apiAccounts.find(matchesRecoveryDetails);
+            account = databaseAccount || localAccount;
+        } catch (error) {
+            console.error("No se pudo conectar con la base de datos para recuperar la contrasena", error);
+            setFeedback("No se pudo conectar con la base de datos. Inicia la aplicacion con npm run dev e intenta de nuevo.");
+            return;
+        }
+
+        if (!account) {
+            setFeedback("No encontramos una cuenta con ese correo y celular. Verifica los datos registrados.");
+            return;
+        }
+
+        let databaseResponse;
+        try {
+            const requestBody = {
+                username: account.username,
+                correo: account.email || account.correo,
+                password: newPassword,
+                nombre: account.name || account.nombre || account.username,
+                telefono: account.phone || account.telefono || "",
+                direccion: account.city || account.ciudad || account.direccion || "",
+            };
+            databaseResponse = await fetch(databaseAccount?.id
+                ? `${API_BASE}/usuarios/${databaseAccount.id}`
+                : `${API_BASE}/usuarios`, {
+                method: databaseAccount?.id ? "PUT" : "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(requestBody),
+            });
+            if (!databaseResponse.ok) throw new Error(`HTTP ${databaseResponse.status}`);
+        } catch (error) {
+            console.error("No se pudo guardar la nueva contrasena en la base de datos", error);
+            setFeedback("No se pudo guardar la nueva contrasena en la base de datos. Intenta de nuevo.");
+            return;
+        }
+
+        const updatedAccount = mapApiAccount({ ...account, ...(await databaseResponse.json()), password: newPassword });
+        const matchesAccount = (item) =>
+            normalizeValue(item.username) === normalizeValue(account.username) ||
+            normalizeValue(item.email) === normalizeValue(account.email);
+        const nextAccounts = accounts.some(matchesAccount)
+            ? accounts.map((item) => matchesAccount(item) ? { ...item, ...updatedAccount, token: item.token } : item)
+            : [...accounts, updatedAccount];
+
+        setAccounts(nextAccounts);
+        saveToStorage("accounts", nextAccounts);
+        formElement.reset();
+        setFeedback("Contrasena restablecida y guardada en la base de datos. Ya puedes iniciar sesion.");
+        setIsRecoveringPassword(false);
+    }
+
     async function handleLogin(event) {
         event.preventDefault();
         const form = new FormData(event.currentTarget);
@@ -677,182 +940,138 @@ function logout() {
             password === "123";
 
         let account = null;
-
         if (isAdminLogin) {
-            const adminAccount = cuentasBase.find((item) => normalizeValue(item.role) === "administrador");
-            if (adminAccount) {
-                account = { ...adminAccount };
-            }
-        }
-
-        if (!account) {
+            account = { ...cuentasBase.find((item) => normalizeValue(item.role) === "administrador") };
+        } else {
             try {
-                const response = await fetch("/api/users");
-                if (response.ok) {
-                    const users = await response.json();
-                    const apiAccount = users.find(
-                        (user) =>
-                            (user.email === username || user.username === username) &&
-                            user.password === password
-                    );
-                    if (apiAccount) {
-                        account = {
-                            ...apiAccount,
-                            role: normalizeRole(apiAccount.role),
-                            username: apiAccount.username || apiAccount.email || username,
-                        };
-                    }
+                const response = await fetch(`${API_BASE}/login`, {
+                    method: "POST",
+                    headers: { Accept: "application/json", "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({ username, password }),
+                });
+                const result = await response.json().catch(() => ({}));
+                if (!response.ok || !result.token || !result.data?.user) {
+                    throw new Error(result.message || "Usuario o contrasena incorrectos.");
                 }
+                const apiUser = result.data.user;
+                const isAdmin = (apiUser.roles || []).some(
+                    (role) => normalizeValue(role.nombre) === "administrador"
+                );
+                account = mapApiAccount({
+                    ...apiUser,
+                    role: isAdmin ? "Administrador" : "Usuario",
+                    token: result.token,
+                });
             } catch (error) {
-                console.error("No se pudo validar con la API", error);
-            }
-        }
-
-        if (!account) {
-            account = accounts.find(
-                (item) =>
-                    normalizeValue(item.username) === normalizedUsername ||
-                    normalizeValue(item.email) === normalizedUsername
-            );
-
-            if (account && account.password !== password) {
-                account = null;
-            }
-        }
-
-        if (!account && isAdminLogin) {
-            const adminAccount = cuentasBase.find((item) => item.role === "Administrador");
-            if (adminAccount) {
-                account = { ...adminAccount };
-            }
-        }
-
-        if (account) {
-            const normalizedRole = normalizeRole(account.role);
-            const accountWithToken = { ...account, role: normalizedRole, token: account.token || getAuthToken() };
-            const accountExists = accounts.some(
-                (item) =>
-                    normalizeValue(item.username) === normalizeValue(account.username) ||
-                    normalizeValue(item.email) === normalizeValue(account.email)
-            );
-            const nextAccounts = accountExists
-                ? accounts.map((item) =>
-                      normalizeValue(item.username) === normalizeValue(account.username) ||
-                      normalizeValue(item.email) === normalizeValue(account.email)
-                          ? accountWithToken
-                          : item
-                  )
-                : [...accounts, accountWithToken];
-
-            setSession(accountWithToken);
-            setAccounts(nextAccounts);
-            saveToStorage("session", accountWithToken);
-            saveToStorage("token", accountWithToken.token);
-            saveToStorage("accounts", nextAccounts);
-            if (normalizedRole === "Administrador") {
-                window.location.assign(`${ADMIN_APP_URL}/`);
+                setFeedback(error.message || "No se pudo iniciar sesion con Laravel.");
                 return;
             }
-            const nextScreen = postAuthScreen || "user";
-            setScreen(nextScreen);
-            setPostAuthScreen(null);
+        }
+
+        if (!account?.username) {
+            setFeedback("No se encontro la cuenta. Verifica tus datos e intenta de nuevo.");
             return;
         }
 
-        setFeedback("Credenciales invalidas. Prueba con admin / 123 o admin@gmail.com / 123.");
-    }
+        const normalizedRole = normalizeRole(account.role);
+        const accountWithToken = { ...account, role: normalizedRole, token: account.token || getAuthToken() };
+        const accountExists = accounts.some(
+            (item) => item.id === accountWithToken.id || normalizeValue(item.username) === normalizeValue(account.username)
+        );
+        const nextAccounts = accountExists
+            ? accounts.map((item) => item.id === accountWithToken.id || normalizeValue(item.username) === normalizeValue(account.username) ? accountWithToken : item)
+            : [...accounts, accountWithToken];
 
+        setSession(accountWithToken);
+        setAccounts(nextAccounts);
+        saveToStorage("session", accountWithToken);
+        saveToStorage("token", accountWithToken.token);
+        saveToStorage("accounts", nextAccounts);
+        if (normalizedRole === "Administrador") {
+            window.location.assign(`${ADMIN_APP_URL}/`);
+            return;
+        }
+        const nextScreen = postAuthScreen || "user";
+        setScreen(nextScreen);
+        setPostAuthScreen(null);
+    }
     async function handleRegister(event) {
         event.preventDefault();
         const form = new FormData(event.currentTarget);
-        const name = String(form.get("name") || "").trim();
-        const email = String(form.get("email") || "").trim();
-        const phone = String(form.get("phone") || "").trim();
-        const city = String(form.get("city") || "").trim();
-        const username = String(form.get("username") || "").trim();
+        const nombre = String(form.get("name") || "").trim();
+        const correo = String(form.get("email") || "").trim();
+        const telefono = String(form.get("phone") || "").trim();
+        const direccion = String(form.get("city") || "").trim();
         const password = String(form.get("password") || "");
         const confirmPassword = String(form.get("confirmPassword") || "");
 
-        if (!/^\d{10}$/.test(phone)) {
+        if (!/^\d{10}$/.test(telefono)) {
             setFeedback("El celular debe tener 10 digitos.");
             return;
         }
-
         if (password.length < 6) {
             setFeedback("La contrasena debe tener al menos 6 caracteres.");
             return;
         }
-
         if (password !== confirmPassword) {
             setFeedback("Las contrasenas no coinciden.");
             return;
         }
 
-        const cleanUsername = normalizeValue(username).replace(/[^a-z0-9.]/g, "") || "usuario.demo";
-        const uniqueUsername = accounts.some((item) => normalizeValue(item.username) === cleanUsername)
-            ? `${cleanUsername}${accounts.length + 1}`
-            : cleanUsername;
-        const uniqueEmail = accounts.some((item) => normalizeValue(item.email) === normalizeValue(email))
-            ? `${uniqueUsername}@libreria.com`
-            : email;
-        const newAccount = {
-            role: "Usuario",
-            name,
-            username: uniqueUsername,
-            email: uniqueEmail,
-            password,
-            phone,
-            city,
-        };
-
-        let createdAccount = newAccount;
+        const username = normalizeValue(form.get("username")).replace(/[^a-z0-9.]/g, "") || "usuario.demo";
         try {
-            const response = await fetch("/api/users", {
+            const listResponse = await fetch(`${API_BASE}/usuarios`, { headers: { Accept: "application/json" } });
+            if (!listResponse.ok) throw new Error(`Laravel respondio HTTP ${listResponse.status}.`);
+            const users = getApiRows(await listResponse.json(), "usuario");
+            if (users.some((user) => normalizeValue(user.username) === username || normalizeValue(user.correo) === normalizeValue(correo))) {
+                setFeedback("Este usuario o correo ya esta registrado.");
+                return;
+            }
+
+            const createResponse = await fetch(`${API_BASE}/usuarios`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(newAccount),
+                credentials: "include",
+                headers: { Accept: "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password, correo, nombre, telefono, direccion }),
             });
-            if (response.ok) {
-                createdAccount = await response.json();
-                setFeedback("Cuenta creada y registrada en la API.");
-            } else {
-                throw new Error(`HTTP ${response.status}`);
+            const createResult = await createResponse.json().catch(() => ({}));
+            if (!createResponse.ok) {
+                const validationMessage = Object.values(createResult.errors || {})[0]?.[0];
+                throw new Error(validationMessage || createResult.message || "No se pudo crear la cuenta.");
             }
+
+            const loginResponse = await fetch(`${API_BASE}/login`, {
+                method: "POST",
+                credentials: "include",
+                headers: { Accept: "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password }),
+            });
+            const loginResult = await loginResponse.json().catch(() => ({}));
+            if (!loginResponse.ok || !loginResult.token || !loginResult.data?.user) {
+                throw new Error("La cuenta se guardo, pero no se pudo iniciar sesion. Ingresa con tus nuevos datos.");
+            }
+
+            const accountWithToken = mapApiAccount({ ...loginResult.data.user, role: "Usuario", token: loginResult.token });
+            const client = { id: accountWithToken.id, nombre, usuario: username, correo, telefono, direccion };
+            setClientes((current) => [...current.filter((item) => normalizeValue(item.usuario) !== username), client]);
+            setSession(accountWithToken);
+            setAccounts((current) => {
+                const next = [...current.filter((item) => item.id !== accountWithToken.id && normalizeValue(item.username) !== username), accountWithToken];
+                saveToStorage("accounts", next);
+                return next;
+            });
+            saveToStorage("session", accountWithToken);
+            saveToStorage("token", accountWithToken.token);
+            setFeedback("Cuenta creada y guardada en la base de datos.");
+            const nextScreen = postAuthScreen || "user";
+            setScreen(nextScreen);
+            setPostAuthScreen(null);
         } catch (error) {
-            console.error(error);
-            setFeedback("Cuenta creada localmente. Activa la API para persistirla.");
-            if (!createdAccount.id) {
-                createdAccount = { ...createdAccount, id: Date.now() };
-            }
+            console.error("No se pudo registrar en Laravel", error);
+            setFeedback(error.message || "No se pudo guardar la cuenta en la base de datos.");
         }
-
-        setAccounts((current) => [...current, createdAccount]);
-        setClientes((current) => [
-            ...current,
-            {
-                id: current.length ? Math.max(...current.map((item) => item.id)) + 1 : 1,
-                nombre: name,
-                usuario: uniqueUsername,
-                correo: uniqueEmail,
-                telefono: phone,
-                direccion: city,
-            },
-        ]);
-
-        const accountWithToken = { ...createdAccount, token: getAuthToken() };
-        setSession(accountWithToken);
-        setAccounts((current) => {
-            const nextAccounts = [...current, accountWithToken];
-            saveToStorage("accounts", nextAccounts);
-            return nextAccounts;
-        });
-        saveToStorage("session", accountWithToken);
-        saveToStorage("token", accountWithToken.token);
-        const nextScreen = postAuthScreen || "user";
-        setScreen(nextScreen);
-        setPostAuthScreen(null);
     }
-
     async function addBook(event) {
         event.preventDefault();
         const form = new FormData(event.currentTarget);
@@ -865,7 +1084,7 @@ function logout() {
         };
 
         try {
-            const response = await fetch(`${API_BASE}/libro`, {
+            const response = await fetch(`${API_BASE}/libros`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(newBook),
@@ -893,7 +1112,7 @@ function logout() {
 
     async function deleteBook(id) {
         try {
-            const response = await fetch(`${API_BASE}/libro/${id}`, {
+            const response = await fetch(`${API_BASE}/libros/${id}`, {
                 method: "DELETE",
             });
             if (!response.ok) {
@@ -924,7 +1143,7 @@ function logout() {
             id_libro: id,
         };
         try {
-            const response = await fetch(`${API_BASE}/libro/${id}`, {
+            const response = await fetch(`${API_BASE}/libros/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(updatedBook),
@@ -1006,15 +1225,38 @@ function logout() {
                     </div>
 
                     <div className="auth-switch">
-                        <button className={authMode === "login" ? "active" : ""} type="button" onClick={() => setAuthMode("login")}>
+                        <button className={authMode === "login" ? "active" : ""} type="button" onClick={() => { setAuthMode("login"); setIsRecoveringPassword(false); }}>
                             Iniciar Sesion
                         </button>
-                        <button className={authMode === "registro" ? "active" : ""} type="button" onClick={() => setAuthMode("registro")}>
+                        <button className={authMode === "registro" ? "active" : ""} type="button" onClick={() => { setAuthMode("registro"); setIsRecoveringPassword(false); }}>
                             Registro
                         </button>
                     </div>
 
-                    {authMode === "login" ? (
+                    {authMode === "login" && isRecoveringPassword ? (
+                        <form className="login-form" onSubmit={handlePasswordRecovery}>
+                            <div className="grupo-input">
+                                <label htmlFor="recovery-email">Correo registrado</label>
+                                <input id="recovery-email" name="email" type="email" autoComplete="email" required />
+                            </div>
+                            <div className="grupo-input">
+                                <label htmlFor="recovery-phone">Celular registrado</label>
+                                <input id="recovery-phone" name="phone" type="tel" maxLength="10" autoComplete="tel" required />
+                            </div>
+                            <div className="grupo-input">
+                                <label htmlFor="recovery-new-password">Nueva contrasena</label>
+                                <input id="recovery-new-password" name="newPassword" type="password" minLength="6" autoComplete="new-password" required />
+                            </div>
+                            <div className="grupo-input">
+                                <label htmlFor="recovery-confirm-password">Confirmar nueva contrasena</label>
+                                <input id="recovery-confirm-password" name="confirmPassword" type="password" minLength="6" autoComplete="new-password" required />
+                            </div>
+                            <button className="login-submit" type="submit">Restablecer contrasena</button>
+                            <button className="forgot-password-link" type="button" onClick={() => { setIsRecoveringPassword(false); setFeedback(""); }}>
+                                Volver a iniciar sesion
+                            </button>
+                        </form>
+                    ) : authMode === "login" ? (
                         <form className="login-form" onSubmit={handleLogin}>
                             <div className="grupo-input">
                                 <label>Usuario</label>
@@ -1029,6 +1271,9 @@ function logout() {
                                 <input name="password" type="password" defaultValue="123456" required />
                             </div>
                             <button className="login-submit" type="submit">Entrar al modulo principal</button>
+                            <button className="forgot-password-link" type="button" onClick={() => { setIsRecoveringPassword(true); setFeedback(""); }}>
+                                ¿Olvidaste tu contraseña?
+                            </button>
                         </form>
                     ) : (
                         <form className="login-form" onSubmit={handleRegister}>
@@ -1066,7 +1311,7 @@ function logout() {
                         </form>
                     )}
 
-                    {feedback && <p className="auth-feedback error">{feedback}</p>}
+                    {feedback && <p className={`auth-feedback ${feedback.startsWith("Contrasena restablecida") ? "success" : "error"}`}>{feedback}</p>}
                     <p className="login-helper">El administrador solo inicia sesion. El registro crea cuentas de usuario.</p>
                 </section>
             </main>
@@ -1339,29 +1584,81 @@ function logout() {
             <main>
                 <section className="content-width">
                     {renderSectionHeader({ title: "Perfil", subtitle: "Informacion de la cuenta activa." })}
-                    <div className="stats-grid">
-                        <article className="stat-box">
-                            <small>Nombre</small>
-                            <strong>{session?.name}</strong>
-                        </article>
-                        <article className="stat-box">
-                            <small>Correo</small>
-                            <strong>{session?.email}</strong>
-                        </article>
-                        <article className="stat-box">
-                            <small>Ciudad</small>
-                            <strong>{session?.city}</strong>
-                        </article>
-                        <article className="stat-box">
-                            <small>Hora de ingreso</small>
-                            <strong className="login-time"><span>{loginTime.date}</span><span>{loginTime.time}</span></strong>
-                        </article>
-                    </div>
+                    {isEditingProfile ? (
+                        <section className="password-change-section profile-edit-section">
+                            <h2>Editar mis datos</h2>
+                            <form className="password-change-form" onSubmit={handleProfileUpdate}>
+                                <div className="grupo-input">
+                                    <label htmlFor="profile-name">Nombre completo</label>
+                                    <input id="profile-name" name="name" defaultValue={session?.name || ""} maxLength="100" required />
+                                </div>
+                                <div className="grupo-input">
+                                    <label htmlFor="profile-username">Usuario</label>
+                                    <input id="profile-username" name="username" defaultValue={session?.username || ""} maxLength="50" required />
+                                </div>
+                                <div className="grupo-input">
+                                    <label htmlFor="profile-email">Correo</label>
+                                    <input id="profile-email" name="email" type="email" defaultValue={session?.email || ""} maxLength="100" required />
+                                </div>
+                                <div className="grupo-input">
+                                    <label htmlFor="profile-phone">Celular</label>
+                                    <input id="profile-phone" name="phone" type="tel" defaultValue={session?.phone || ""} maxLength="15" required />
+                                </div>
+                                <div className="grupo-input">
+                                    <label htmlFor="profile-city">Ciudad</label>
+                                    <input id="profile-city" name="city" defaultValue={session?.city || ""} maxLength="150" required />
+                                </div>
+                                <div className="profile-edit-actions">
+                                    <button className="login-submit" type="submit">Guardar cambios</button>
+                                    <button className="secondary-button" type="button" onClick={() => { setIsEditingProfile(false); setFeedback(""); }}>Cancelar</button>
+                                </div>
+                            </form>
+                        </section>
+                    ) : isChangingPassword ? (
+                        <section className="password-change-section profile-edit-section">
+                            <h2>Cambiar contraseña</h2>
+                            <form className="password-change-form" onSubmit={handlePasswordChange}>
+                                <div className="grupo-input">
+                                    <label htmlFor="current-password">Contraseña actual</label>
+                                    <input id="current-password" name="currentPassword" type="password" autoComplete="current-password" required />
+                                </div>
+                                <div className="grupo-input">
+                                    <label htmlFor="new-password">Nueva contraseña</label>
+                                    <input id="new-password" name="newPassword" type="password" minLength="6" autoComplete="new-password" required />
+                                </div>
+                                <div className="grupo-input">
+                                    <label htmlFor="confirm-new-password">Confirmar nueva contraseña</label>
+                                    <input id="confirm-new-password" name="confirmPassword" type="password" minLength="6" autoComplete="new-password" required />
+                                </div>
+                                <div className="profile-edit-actions">
+                                    <button className="login-submit" type="submit">Guardar nueva contraseña</button>
+                                    <button className="secondary-button" type="button" onClick={() => { setIsChangingPassword(false); setFeedback(""); }}>Cancelar</button>
+                                </div>
+                            </form>
+                        </section>
+                    ) : (
+                        <>
+                            <div className="stats-grid">
+                                <article className="stat-box"><small>Nombre</small><strong>{session?.name}</strong></article>
+                                <article className="stat-box"><small>Usuario</small><strong>{session?.username}</strong></article>
+                                <article className="stat-box"><small>Correo</small><strong>{session?.email}</strong></article>
+                                <article className="stat-box"><small>Celular</small><strong>{session?.phone || "No registrado"}</strong></article>
+                                <article className="stat-box"><small>Ciudad</small><strong>{session?.city}</strong></article>
+                                <article className="stat-box"><small>Hora de ingreso</small><strong className="login-time"><span>{loginTime.date}</span><span>{loginTime.time}</span></strong></article>
+                            </div>
+                            <div className="profile-action-buttons">
+                                <button className="profile-edit-button" type="button" onClick={() => { setIsEditingProfile(true); setFeedback(""); }}>Cambiar mis datos</button>
+                                <button className="profile-edit-button" type="button" onClick={() => { setIsChangingPassword((open) => !open); setFeedback(""); }}>
+                                    {isChangingPassword ? "Cancelar cambio" : "Cambiar contrasena"}
+                                </button>
+                            </div>
+                        </>
+                    )}
+                    {feedback && <p className={`auth-feedback ${feedback.includes("actualizaron") || feedback.includes("correctamente") ? "success" : "error"}`}>{feedback}</p>}
                 </section>
             </main>
         );
     }
-
     function renderCartScreen() {
         return (
             <main>
@@ -1751,7 +2048,7 @@ function logout() {
                     <div className="menu-grid">
                         <article className="menu-card">
                             <h3>Correo</h3>
-                            <p>contacto@libreria.com</p>
+                            <p><a className="contact-email" href="mailto:lecturasinlimites22@gmail.com">lecturasinlimites22@gmail.com</a></p>
                         </article>
                         {whatsappNumbers.map((item) => (
                             <a
@@ -2001,6 +2298,7 @@ function logout() {
                         setSearchQuery("");
                         setScreen("home");
                     }}
+                    onProfileClick={() => setScreen("profile")}
                     onLogout={logout}
                 />
             )}
@@ -2011,3 +2309,4 @@ function logout() {
 }
 
 export default Inicio;
+

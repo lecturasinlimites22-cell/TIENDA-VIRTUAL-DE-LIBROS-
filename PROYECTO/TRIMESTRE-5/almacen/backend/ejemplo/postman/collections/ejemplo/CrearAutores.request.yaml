@@ -1,0 +1,41 @@
+$kind: http-request
+name: CrearAutores
+description: |-
+  ## Crear Autor
+
+  Registra un nuevo autor en el sistema con su nombre.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `POST` |
+  | URL     | `http://127.0.0.1:8000/api/autores` |
+
+  ### 📥 Body (JSON)
+  | Campo       | Tipo   | Descripción          |
+  |-------------|--------|----------------------|
+  | `id_autor`  | int    | ID del autor         |
+  | `nombre`    | string | Nombre del autor     |
+
+  ### ✅ Respuesta esperada
+  - **201 Created** – Autor creado correctamente.
+  - **400 Bad Request** – Datos inválidos o incompletos.
+url: http://127.0.0.1:8000/api/autores
+method: POST
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \        \"id_autor\": 17,\r
+
+    \        \"nombre\": \"Antoine de Saint-Exupéry\"\r
+
+    \    }"
+order: 43000

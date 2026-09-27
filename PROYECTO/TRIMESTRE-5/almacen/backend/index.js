@@ -8,7 +8,7 @@ import authRoutes, { requireAuth } from './RUTAS/auth.js';
 
 
 const app = express();//Permite inicilizar las aplicaciones y configurar las urls
-const PORT = 5000;
+const PORT = Number(process.env.PORT) || 5000;
 
 app.use(cors({ origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000', 'http://127.0.0.1:3000'], credentials: true }));
 app.use(express.json({ limit: '1mb' })); // Permite recibir JSON sin aceptar cargas excesivas
@@ -16,7 +16,7 @@ app.use(cookieParser());
 
 app.use('/api', authRoutes);
 app.use('/api', (req, res, next) => {
-  if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method) || req.path === '/login' || req.path === '/logout') return next();
+  if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method) || ['/login', '/logout', '/register'].includes(req.path)) return next();
   return requireAuth(req, res, next);
 });
 

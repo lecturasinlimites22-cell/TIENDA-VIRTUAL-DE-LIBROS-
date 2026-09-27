@@ -1,0 +1,48 @@
+$kind: http-request
+name: EliminarEmpleado
+description: |-
+  ## Eliminar Empleado
+
+  Elimina un empleado del sistema identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `DELETE` |
+  | URL     | `http://127.0.0.1:8000/api/empleados/18` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción                  |
+  |------------|------|------------------------------|
+  | `id`       | int  | ID del empleado a eliminar   |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Empleado eliminado correctamente.
+  - **404 Not Found** – El empleado no existe.
+url: http://127.0.0.1:8000/api/empleados/18
+method: DELETE
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \    \"id_empleado\": 18,\r
+
+    \    \"nombre\": \"Andres\",\r
+
+    \    \"apellido\": \"Felipe\",\r
+
+    \    \"telefono\": \"312457859\",\r
+
+    \    \"cargo\": \"Gerente\",\r
+
+    \    \"id_usuario\": null\r
+
+    \  }"
+order: 65000

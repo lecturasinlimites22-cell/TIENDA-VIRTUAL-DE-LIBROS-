@@ -1,0 +1,31 @@
+$kind: http-request
+name: ConsultarCodigo
+description: |-
+  ## Consultar Registro por Código
+
+  Retorna la información de un registro específico identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `URL pendiente de configurar` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción               |
+  |------------|------|---------------------------|
+  | `id`       | int  | ID del registro a consultar |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Registro encontrado correctamente.
+  - **404 Not Found** – El registro no existe.
+url: ""
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+order: 27000

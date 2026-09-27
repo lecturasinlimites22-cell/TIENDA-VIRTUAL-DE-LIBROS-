@@ -1,0 +1,51 @@
+$kind: http-request
+name: ModificarPago
+description: |-
+  ## Modificar Pago
+
+  Actualiza los datos de un pago existente en el sistema identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `PUT` |
+  | URL     | `http://127.0.0.1:8000/api/pagos/17` |
+
+  ### 📥 Body (JSON)
+  | Campo            | Tipo    | Descripción                        |
+  |------------------|---------|-------------------------------------|
+  | `id_pago`        | int     | ID del pago                         |
+  | `id_venta`       | int     | ID de la venta asociada             |
+  | `id_metodo_pago` | int     | Nuevo ID del método de pago         |
+  | `monto`          | decimal | Nuevo monto del pago                |
+  | `fecha_pago`     | string  | Nueva fecha y hora del pago         |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Pago actualizado correctamente.
+  - **404 Not Found** – El pago no existe.
+  - **400 Bad Request** – Datos inválidos o incompletos.
+url: http://127.0.0.1:8000/api/pagos/17
+method: PUT
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \        \"id_pago\": 17,\r
+
+    \        \"id_venta\": 21,\r
+
+    \        \"id_metodo_pago\": null,\r
+
+    \        \"monto\": null,\r
+
+    \        \"fecha_pago\": null\r
+
+    \    }"
+order: 24000

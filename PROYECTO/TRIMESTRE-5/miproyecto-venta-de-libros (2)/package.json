@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "frontend": "npx kill-port 5173 && vite --host localhost --port 5173",
+    "api": "npx kill-port 3001 && json-server --watch db.json --host localhost --port 3001",
     "dev": "npm run frontend",
     "build": "vite build",
     "preview": "vite preview",
@@ -23,7 +24,6 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
-    "concurrently": "^8.2.0",
     "eslint": "^10.3.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",

@@ -1,16 +1,10 @@
 import { Link } from 'react-router-dom';
+import { apiFetch } from '../api';
 
 function Navbar({ onLogout = () => {} }) {
   const logout = async () => {
     try {
-      await fetch('http://localhost:5000/api/logout', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(sessionStorage.getItem('admin-token') ? { Authorization: `Bearer ${sessionStorage.getItem('admin-token')}` } : {}),
-        },
-      });
+      await apiFetch('/logout', { method: 'POST' });
     } catch (logoutError) {
       console.warn('No fue posible cerrar la sesión en la API:', logoutError);
     } finally {

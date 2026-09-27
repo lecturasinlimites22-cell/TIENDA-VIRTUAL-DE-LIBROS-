@@ -1,0 +1,39 @@
+$kind: http-request
+name: ConsultarCliente
+description: |-
+  ## Consultar Clientes
+
+  Retorna el listado completo de clientes registrados en el sistema.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `http://127.0.0.1:8000/api/clientes` |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Lista de clientes obtenida correctamente.
+  - **404 Not Found** – No se encontraron clientes registrados.
+url: http://127.0.0.1:8000/api/clientes
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \    \"id_cliente\": 16,\r
+
+    \    \"nombre\": \"Mateo Vargas\",\r
+
+    \    \"telefono\": \"3156666666\",\r
+
+    \    \"direccion\": \"Popayán\"\r
+
+    \  }"
+order: 51000

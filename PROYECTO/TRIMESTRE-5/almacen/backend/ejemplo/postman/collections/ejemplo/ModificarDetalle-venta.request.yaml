@@ -1,0 +1,51 @@
+$kind: http-request
+name: ModificarDetalle-venta
+description: |-
+  ## Modificar Detalle de Venta
+
+  Actualiza los datos de un detalle de venta existente en el sistema identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `PUT` |
+  | URL     | `http://127.0.0.1:8000/api/detalles-venta/17` |
+
+  ### 📥 Body (JSON)
+  | Campo             | Tipo    | Descripción                        |
+  |-------------------|---------|------------------------------------|
+  | `id_detalle`      | int     | ID del detalle de venta            |
+  | `id_venta`        | int     | ID de la venta asociada            |
+  | `id_libro`        | int     | ID del libro asociado              |
+  | `cantidad`        | int     | Nueva cantidad de libros           |
+  | `precio_unitario` | decimal | Nuevo precio unitario del libro    |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Detalle de venta actualizado correctamente.
+  - **404 Not Found** – El detalle de venta no existe.
+  - **400 Bad Request** – Datos inválidos o incompletos.
+url: http://127.0.0.1:8000/api/detalles-venta/17
+method: PUT
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \    \"id_detalle\": 17,\r
+
+    \    \"id_venta\": 17,\r
+
+    \    \"id_libro\": null,\r
+
+    \    \"cantidad\": 5,\r
+
+    \    \"precio_unitario\": \"100000.00\"\r
+
+    }"
+order: 34000

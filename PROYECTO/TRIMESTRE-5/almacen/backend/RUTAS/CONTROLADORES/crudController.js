@@ -69,7 +69,7 @@ export function createHandlers(table) {
     try {
       const { columns } = await metadata(table);
       const page = Math.max(Number.parseInt(req.query.page, 10) || 1, 1);
-      const limit = Math.min(Math.max(Number.parseInt(req.query.limit, 10) || 10, 1), 100);
+      const limit = Math.min(Math.max(Number.parseInt(req.query.limit, 10) || 100, 1), 100);
       const search = String(req.query.search || '').trim();
       const textColumns = columns.filter((column) => /char|text|varchar/i.test(column.Type));
       const where = search && textColumns.length ? ` WHERE ${textColumns.map((column) => `\`${column.Field}\` LIKE ?`).join(' OR ')}` : '';

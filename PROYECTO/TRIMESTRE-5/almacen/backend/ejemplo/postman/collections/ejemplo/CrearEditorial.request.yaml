@@ -1,0 +1,44 @@
+$kind: http-request
+name: CrearEditorial
+description: |-
+  ## Crear Editorial
+
+  Registra una nueva editorial en el sistema con su nombre y país de origen.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `POST` |
+  | URL     | `http://127.0.0.1:8000/api/editoriales` |
+
+  ### 📥 Body (JSON)
+  | Campo          | Tipo   | Descripción              |
+  |----------------|--------|--------------------------|
+  | `id_editorial` | int    | ID de la editorial       |
+  | `nombre`       | string | Nombre de la editorial   |
+  | `pais`         | string | País de origen           |
+
+  ### ✅ Respuesta esperada
+  - **201 Created** – Editorial creada correctamente.
+  - **400 Bad Request** – Datos inválidos o incompletos.
+url: http://127.0.0.1:8000/api/editoriales
+method: POST
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \        \"id_editorial\": 17,\r
+
+    \        \"nombre\": \"Anagrama\",\r
+
+    \        \"pais\": \"España\"\r
+
+    \        }  "
+order: 58000

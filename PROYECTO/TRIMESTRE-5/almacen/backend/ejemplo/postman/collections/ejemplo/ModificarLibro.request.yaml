@@ -1,0 +1,54 @@
+$kind: http-request
+name: ModificarLibro
+description: |-
+  ## Modificar Libro
+
+  Actualiza los datos de un libro existente en el sistema identificado por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `PUT` |
+  | URL     | `http://127.0.0.1:8000/api/libros/17` |
+
+  ### 📥 Body (JSON)
+  | Campo          | Tipo    | Descripción                      |
+  |----------------|---------|----------------------------------|
+  | `id_libro`     | int     | ID del libro                     |
+  | `titulo`       | string  | Nuevo título del libro           |
+  | `precio`       | decimal | Nuevo precio del libro           |
+  | `stock`        | int     | Nueva cantidad en stock          |
+  | `id_categoria` | int     | Nuevo ID de la categoría         |
+  | `id_editorial` | int     | Nuevo ID de la editorial         |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Libro actualizado correctamente.
+  - **404 Not Found** – El libro no existe.
+  - **400 Bad Request** – Datos inválidos o incompletos.
+url: http://127.0.0.1:8000/api/libros/17
+method: PUT
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: "{\r
+
+    \        \"id_libro\": 17,\r
+
+    \        \"titulo\": \"El principito\",\r
+
+    \        \"precio\": \"75000.00\",\r
+
+    \        \"stock\": 25,\r
+
+    \        \"id_categoria\": null,\r
+
+    \        \"id_editorial\": null\r
+
+    \    }\r\n"
+order: 39000

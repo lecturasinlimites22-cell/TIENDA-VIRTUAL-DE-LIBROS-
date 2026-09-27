@@ -1,0 +1,34 @@
+$kind: http-request
+name: ConsultarCodigo
+description: |-
+  ## Consultar Asignación Rol-Usuario por Código
+
+  Retorna la información de una asignación de rol a usuario específica identificada por su ID.
+
+  ---
+
+  ### 🔧 Detalles técnicos
+  | Campo   | Valor |
+  |---------|-------|
+  | Método  | `GET` |
+  | URL     | `http://127.0.0.1:8000/api/rol-usuarios/1` |
+
+  ### 📥 Parámetros
+  | Campo      | Tipo | Descripción                          |
+  |------------|------|--------------------------------------|
+  | `id`       | int  | ID de la asignación rol-usuario a consultar |
+
+  ### ✅ Respuesta esperada
+  - **200 OK** – Asignación encontrada correctamente.
+  - **404 Not Found** – La asignación no existe.
+url: http://127.0.0.1:8000/api/rol-usuarios/1
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+body:
+  type: json
+  content: ""
+order: 13000

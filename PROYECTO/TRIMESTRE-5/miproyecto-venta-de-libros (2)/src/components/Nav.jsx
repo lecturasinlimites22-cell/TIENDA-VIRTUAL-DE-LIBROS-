@@ -55,6 +55,7 @@ function Nav({
     onSearchSubmit = (event) => event.preventDefault(),
     onSearchClear = () => {},
     onHomeClick = () => {},
+    onProfileClick = () => {},
     onLogout = () => {},
 }) {
     return (
@@ -117,7 +118,16 @@ function Nav({
                             Iniciar sesión
                         </NavLink>
                     )}
-                    {isLoggedIn && <Link className="nav-action-link" to="/perfil"><UserIcon /><span>Perfil</span></Link>}
+                    {isLoggedIn && (
+                        <Link
+                            className="nav-action-link"
+                            to="/perfil"
+                            onClick={() => onProfileClick()}
+                        >
+                            <UserIcon />
+                            <span>Perfil</span>
+                        </Link>
+                    )}
                     {isLoggedIn && <button className="nav-logout" type="button" onClick={onLogout}>Cerrar sesión</button>}
                     <Link className="nav-action-link" to="/favoritos"><HeartIcon /><span>Favoritos</span></Link>
                     <Link className="nav-action-link" to="/carrito"><CartIcon /><span>Carrito</span></Link>
